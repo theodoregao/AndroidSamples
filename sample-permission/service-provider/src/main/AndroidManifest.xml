@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="aero.panasonic.sample.permission.provider" >
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <permission
+        android:name="aero.panasonic.sample.permission.provider"
+        android:protectionLevel="signature" />
+
+    <permission
+        android:name="aero.panasonic.sample.permission.provider.READ" />
+
+    <permission
+        android:name="aero.panasonic.sample.permission.provider.READ.SECRET"
+        android:protectionLevel="signature" />
+
+    <permission
+        android:name="aero.panasonic.sample.permission.provider.WRITE"
+        android:protectionLevel="signature" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme" >
+        <activity android:name=".Provider" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".SimpleProvider"
+            android:exported="true"
+            android:permission="aero.panasonic.sample.permission.provider" >
+            <intent-filter>
+                <action android:name="aero.panasonic.sample.permission.provider.LAUNCH_ACTIVITY" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <provider
+            android:name=".SecretDataProvider"
+            android:authorities="aero.panasonic.sample.provider"
+            android:enabled="true"
+            android:exported="true"
+            android:writePermission="aero.panasonic.sample.permission.provider.WRITE">
+            <path-permission android:pathPrefix="/data/secret"
+                android:readPermission="aero.panasonic.sample.permission.provider.READ.SECRET"/>
+            <path-permission android:pathPrefix="/data/public"
+                android:readPermission="aero.panasonic.sample.permission.provider.READ" />
+        </provider>
+    </application>
+
+</manifest>

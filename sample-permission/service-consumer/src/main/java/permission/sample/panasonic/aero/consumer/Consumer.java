@@ -1,0 +1,115 @@
+package permission.sample.panasonic.aero.consumer;
+
+import android.content.ContentProvider;
+import android.content.ContentValues;
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.text.Editable;
+import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
+
+public class Consumer extends AppCompatActivity {
+
+    private static final String TAG = Consumer.class.getSimpleName();
+
+    private static final String ACTION_LAUNCH_ACTIVITY = "aero.panasonic.sample.permission.provider.LAUNCH_ACTIVITY";
+
+    static final String PROVIDER_NAME = "aero.panasonic.sample.provider";
+    static final String URL = "content://" + PROVIDER_NAME + "/data";
+    static final Uri CONTENT_URI = Uri.parse(URL);
+
+    static final String KEY_SECRET = "secret";
+    static final String KEY_PUBLIC = "public";
+
+    private EditText editTextValue;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_consumer);
+
+        editTextValue = (EditText) findViewById(R.id.value);
+    }
+
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.launchActivity:
+                launchActivity();
+                break;
+
+            case R.id.queryPublic:
+                queryPublic();
+                break;
+
+            case R.id.querySecret:
+                querySecret();
+                break;
+
+            case R.id.writePublic:
+                writePublic();
+                break;
+
+            case R.id.writeSecret:
+                writeSecret();
+                break;
+            
+            default:
+                break;
+        }
+    }
+
+    private void launchActivity() {
+        Intent intent = new Intent();
+        intent.setAction(ACTION_LAUNCH_ACTIVITY);
+        startActivity(intent);
+    }
+
+    private void queryPublic() {
+        Uri uri = Uri.parse(CONTENT_URI + "/" + KEY_PUBLIC);
+        Cursor cursor = query(uri);
+        if (cursor != null && cursor.moveToFirst()) {
+            String publicValue = cursor.getString(cursor.getColumnIndex("value"));
+            Log.v(TAG, "public value = " + publicValue);
+            Toast.makeText(this, "get public value: " + publicValue, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void querySecret() {
+        try {
+            Uri uri = Uri.parse(CONTENT_URI + "/" + KEY_SECRET);
+            Cursor cursor = query(uri);
+            if (cursor != null && cursor.moveToFirst()) {
+                String publicValue = cursor.getString(cursor.getColumnIndex("value"));
+                Log.v(TAG, "secret value = " + publicValue);
+                Toast.makeText(this, "get secret value: " + publicValue, Toast.LENGTH_LONG).show();
+            }
+        }
+        catch (Exception e) {
+            Toast.makeText(this, "uri is incorrect or permission denied", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private Cursor query(Uri uri) {
+        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+        return cursor;
+    }
+
+    private void writePublic() {
+        update(Uri.parse(CONTENT_URI + "/" + KEY_PUBLIC), KEY_PUBLIC, editTextValue.getText().toString());
+    }
+
+    private void writeSecret() {
+        update(Uri.parse(CONTENT_URI + "/" + KEY_SECRET), KEY_SECRET, editTextValue.getText().toString());
+    }
+
+    private void update(Uri uri, String key, String value) {
+        ContentValues values = new ContentValues();
+        values.put(key, value);
+        getContentResolver().update(uri, values, null, null);
+    }
+}

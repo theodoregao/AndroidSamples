@@ -1,1 +1,5 @@
-include ':app', ':search'
+include ':common-android-library'
+
+include ':sample-file:sample-file-provider', ':sample-file:sample-file-consumer'
+
+include ':sample-permission:service-provider', ':sample-permission:service-consumer', ':sample-permission:evil-attacter'

@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
-    <files-path path="text/" name="text" />
-    <files-path path="images/" name="image" />
+    <files-path
+        name="text"
+        path="text/" />
+    <files-path
+        name="image"
+        path="images/" />
 </paths>

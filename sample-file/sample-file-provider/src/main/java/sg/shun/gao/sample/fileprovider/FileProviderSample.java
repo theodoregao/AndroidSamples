@@ -1,7 +1,7 @@
 package sg.shun.gao.sample.fileprovider;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
 public class FileProviderSample extends AppCompatActivity {
 

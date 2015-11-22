@@ -1,43 +1,34 @@
 package sg.shun.gao.sample.fileprovider;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
 
 import sg.shun.gao.libs.android.common.adapter.FileAdapter;
 
 public class FileSelectActivity extends AppCompatActivity implements FileAdapter.OnItemClickListener {
 
-    private static final String TAG = FileSelectActivity.class.getSimpleName();
-
     public static final String FILE_PROVIDER_AUTHORITY = "sg.shun.gao.sample.fileprovider";
-
+    private static final String TAG = FileSelectActivity.class.getSimpleName();
+    FileAdapter fileAdapter;
+    File[] mImageFiles;
+    File[] mTextFiles;
+    String[] mImageFileNames;
+    String[] mTextFileNames;
     private Intent mResultIntent;
-
     private File mPrivateRootDir;
     private File mTextDir;
     private File mImagesDir;
-
-    FileAdapter fileAdapter;
-
-    File[] mImageFiles;
-    File[] mTextFiles;
-
-    String[] mImageFileNames;
-    String[] mTextFileNames;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,8 +82,7 @@ public class FileSelectActivity extends AppCompatActivity implements FileAdapter
             mResultIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             mResultIntent.setDataAndType(fileUri, getContentResolver().getType(fileUri));
             setResult(RESULT_OK, mResultIntent);
-        }
-        else {
+        } else {
             mResultIntent.setDataAndType(null, "");
             setResult(RESULT_CANCELED, mResultIntent);
         }

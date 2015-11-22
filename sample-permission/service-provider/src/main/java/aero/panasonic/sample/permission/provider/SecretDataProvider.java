@@ -7,7 +7,6 @@ import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
 import android.os.Environment;
-import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,35 +14,31 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.HashMap;
 import java.util.Properties;
 
 public class SecretDataProvider extends ContentProvider {
 
 //    private static final String TAG = SecretDataProvider.class.getSimpleName();
 
-    private static final File ROOT_PATH = Environment.getExternalStorageDirectory();
-    File FILE_PATH = new File(ROOT_PATH, Environment.DIRECTORY_DOWNLOADS);
-    File FILE = new File(FILE_PATH, "property.txt");
-
     static final String PROVIDER_NAME = "aero.panasonic.sample.provider";
     static final String URL = "content://" + PROVIDER_NAME + "/data";
     static final Uri CONTENT_URI = Uri.parse(URL);
-
-    String[] columns = new String[] {"_id", "name", "value"};
-
     static final String KEY_SECRET = "secret";
     static final String KEY_PUBLIC = "public";
-
     static final int SECRET = 1;
     static final int PUBLIC = 2;
-
     static final UriMatcher uriMatcher;
-    static{
+    private static final File ROOT_PATH = Environment.getExternalStorageDirectory();
+
+    static {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         uriMatcher.addURI(PROVIDER_NAME, "data/secret", SECRET);
         uriMatcher.addURI(PROVIDER_NAME, "data/public", PUBLIC);
     }
+
+    File FILE_PATH = new File(ROOT_PATH, Environment.DIRECTORY_DOWNLOADS);
+    File FILE = new File(FILE_PATH, "property.txt");
+    String[] columns = new String[]{"_id", "name", "value"};
 
     public SecretDataProvider() {
     }
@@ -138,10 +133,9 @@ public class SecretDataProvider extends ContentProvider {
             properties.load(inputStream);
             String value = properties.getProperty(key);
             if (value != null && !value.equals("")) {
-                matrixCursor.addRow(new Object[] {1, key, value});
-            }
-            else {
-                matrixCursor.addRow(new Object[] {1, key, "default-value"});
+                matrixCursor.addRow(new Object[]{1, key, value});
+            } else {
+                matrixCursor.addRow(new Object[]{1, key, "default-value"});
             }
         } catch (IOException e) {
             e.printStackTrace();

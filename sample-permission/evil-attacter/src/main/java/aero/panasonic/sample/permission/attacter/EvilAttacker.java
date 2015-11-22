@@ -4,8 +4,8 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -13,17 +13,13 @@ import android.widget.Toast;
 
 public class EvilAttacker extends AppCompatActivity {
 
-    private static final String TAG = EvilAttacker.class.getSimpleName();
-
-    private static final String ACTION_LAUNCH_ACTIVITY = "aero.panasonic.sample.permission.provider.LAUNCH_ACTIVITY";
-
     static final String PROVIDER_NAME = "aero.panasonic.sample.provider";
     static final String URL = "content://" + PROVIDER_NAME + "/data";
     static final Uri CONTENT_URI = Uri.parse(URL);
-
     static final String KEY_SECRET = "secret";
     static final String KEY_PUBLIC = "public";
-
+    private static final String TAG = EvilAttacker.class.getSimpleName();
+    private static final String ACTION_LAUNCH_ACTIVITY = "aero.panasonic.sample.permission.provider.LAUNCH_ACTIVITY";
     private EditText editTextValue;
 
     @Override
@@ -66,8 +62,7 @@ public class EvilAttacker extends AppCompatActivity {
         intent.setAction(ACTION_LAUNCH_ACTIVITY);
         try {
             startActivity(intent);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             Toast.makeText(this, "Unable to launch activity", Toast.LENGTH_LONG).show();
         }
     }
@@ -91,8 +86,7 @@ public class EvilAttacker extends AppCompatActivity {
                 Log.v(TAG, "secret value = " + publicValue);
                 Toast.makeText(this, "get secret value: " + publicValue, Toast.LENGTH_LONG).show();
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             Toast.makeText(this, "uri is incorrect or permission denied", Toast.LENGTH_LONG).show();
         }
     }
@@ -101,9 +95,7 @@ public class EvilAttacker extends AppCompatActivity {
         try {
             Cursor cursor = getContentResolver().query(uri, null, null, null, null);
             return cursor;
-        }
-
-        catch (Exception e) {
+        } catch (Exception e) {
             Toast.makeText(this, "Unable query content", Toast.LENGTH_LONG).show();
         }
 
@@ -124,9 +116,7 @@ public class EvilAttacker extends AppCompatActivity {
 
         try {
             getContentResolver().update(uri, values, null, null);
-        }
-
-        catch (Exception e) {
+        } catch (Exception e) {
             Toast.makeText(this, "Unable to write content", Toast.LENGTH_LONG).show();
         }
     }

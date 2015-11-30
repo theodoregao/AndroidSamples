@@ -5,3 +5,6 @@ include ':sample-android'
 include ':sample-file:sample-file-provider', ':sample-file:sample-file-consumer'
 
 include ':sample-permission:service-provider', ':sample-permission:service-consumer', ':sample-permission:evil-attacter'
+
+include ':sample-touch'
+include ':interactive-chart'

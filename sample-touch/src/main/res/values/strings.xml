@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">TouchSample</string>
+    <string name="title_activity_on_touch_event">OnTouchEventActivity</string>
 </resources>

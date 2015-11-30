@@ -15,6 +15,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".OnTouchEvent" />
+        <activity android:name=".GestureDetector" />
+        <activity android:name=".VelocityTracker" />
+        <activity android:name=".OverScroll"></activity>
     </application>
 
 </manifest>

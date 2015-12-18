@@ -8,3 +8,5 @@ include ':sample-permission:service-provider', ':sample-permission:service-consu
 
 include ':sample-touch'
 include ':interactive-chart'
+
+include 'sample-context:consumer', 'sample-context:resource'

@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="aero.panasonic.sample.android">
-
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    package="aero.panasonic.sample.context.consumer">
 
     <application
         android:allowBackup="true"
@@ -10,20 +8,20 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".UriMatchSample" />
-        <activity android:name=".Base64Sample">
+        <activity
+            android:name=".ConsumerActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
 
-        <receiver android:name=".BootCompletedReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="aero.panasonic.action.CONSUME_RESOURCE" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-        </receiver>
+        </activity>
     </application>
 
 </manifest>

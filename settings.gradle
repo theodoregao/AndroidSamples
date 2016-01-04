@@ -9,4 +9,6 @@ include ':common-android-library'
 //include ':sample-touch'
 //include ':interactive-chart'
 
-include 'sample-resource:resource-manager', 'sample-resource:resource-client', 'sample-resource:resource-lib'
+include ':sample-resource:resource-manager', ':sample-resource:resource-client', ':sample-resource:resource-lib'
+
+include ':window-service'

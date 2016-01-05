@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">Prototype</string>
+
+    <string name="clamps">Clamps</string>
+    <string name="saws">Saws</string>
+    <string name="drills">Drills</string>
+    <string name="sanders">Sanders</string>
+    <string name="routers">Routers</string>
+    <string name="more">More</string>
+
+    <string name="clamps_description">Clamps description</string>
+    <string name="saws_description">Saws description</string>
+    <string name="drills_description">Drills description</string>
+    <string name="sanders_description">Sanders description</string>
+    <string name="routers_description">Routers description</string>
+    <string name="more_description">More description</string>
+
+    <string name="about">About</string>
+    <string name="stationary">Stationary</string>
+    <string name="handheld">Handheld</string>
+    <string name="battery">Battery</string>
+</resources>

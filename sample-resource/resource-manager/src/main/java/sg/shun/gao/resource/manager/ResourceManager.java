@@ -6,16 +6,16 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 
+import sg.shun.gao.lib.IEventListener;
 import sg.shun.gao.lib.IResourceManager;
-import sg.shun.gao.lib.Resource;
 import sg.shun.gao.resource.manager.pa.PssController;
 
 public class ResourceManager extends Service {
     private static final String TAG = ResourceManager.class.getSimpleName();
 
-    private static ResourceManager INSTANCE;
-
     private ResourceController mResourceController;
+    private PssController mPssController;
+
     IBinder binder = new IResourceManager.Stub() {
 
         @Override
@@ -47,34 +47,34 @@ public class ResourceManager extends Service {
             Log.v(TAG, "registerIdResource() " + resourceId + ", " + packageName + ", " + id);
             mResourceController.putResourceId(packageName, resourceId, id);
         }
-    };
-    private PssController mPssController;
 
-    public static ResourceManager getInstance() {
-        return INSTANCE;
-    }
+        @Override
+        public void setOnEventListener(IEventListener eventListener) throws RemoteException {
+            mPssController.setEventListener(eventListener);
+        }
+    };
 
     @Override
     public void onCreate() {
         super.onCreate();
         mResourceController = new ResourceController(this);
         mPssController = new PssController(this);
-        INSTANCE = this;
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.v(TAG, "onStartCommand() " + intent.getAction());
 
-        Log.v(TAG, "pa title: " + mResourceController.getResourceString(Resource.string.pa_title));
-        Log.v(TAG, "pa layout: " + mResourceController.getResourceLayout(Resource.layout.pa_layout));
-        Log.v(TAG, "pa message id: " + mResourceController.getResourceString(Resource.id.pa_message));
-        Log.v(TAG, "pa message: " + mResourceController.getResourceString(Resource.string.pa_message));
-        Log.v(TAG, "pa icon: " + mResourceController.getResourceId(Resource.drawable.pa_icon));
+        String action = intent.getAction();
 
-        if (intent.getAction().equals("sg.shun.gao.action.PA_ON"))
+        if (action.equals("sg.shun.gao.action.PA_ON"))
             mPssController.paOn();
-        else mPssController.paOff();
+        else if (action.equals("sg.shun.gao.action.PA_OFF"))
+            mPssController.paOff();
+        else if (action.equals("sg.shun.gao.action.PSS_ON"))
+            mPssController.pssOn();
+        else if (action.equals("sg.shun.gao.action.PSS_OFF"))
+            mPssController.pssOff();
 
         return super.onStartCommand(intent, flags, startId);
     }

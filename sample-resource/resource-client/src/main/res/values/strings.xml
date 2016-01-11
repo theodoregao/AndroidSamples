@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">ResourceClient</string>
 
-    <string name="title_pa">PA</string>
-    <string name="message_pa">PA is ongoing (custom message)</string>
+    <string name="pa_title">PA</string>
+    <string name="pa_message">PA is ongoing (custom message)</string>
+
+    <string name="pss_title">PSS</string>
 </resources>

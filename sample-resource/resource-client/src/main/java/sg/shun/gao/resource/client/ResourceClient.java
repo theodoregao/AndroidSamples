@@ -8,6 +8,7 @@ import android.os.RemoteException;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import sg.shun.gao.lib.IEventListener;
 import sg.shun.gao.lib.IResourceManager;
 import sg.shun.gao.lib.Resource;
 import sg.shun.gao.lib.ResourceManager;
@@ -72,10 +73,26 @@ public class ResourceClient extends AppCompatActivity {
                     registerLayoutResource(Resource.layout.pa_layout, R.layout.dialog_pa);
                     registerAnimationResource(Resource.anim.pa_on, R.anim.jump);
                     registerIdResource(Resource.id.pa_title, R.id.pa_title);
-                    registerStringResource(Resource.string.pa_title, R.string.title_pa);
+                    registerStringResource(Resource.string.pa_title, R.string.pa_title);
                     registerIdResource(Resource.id.pa_message, R.id.pa_message);
-                    registerStringResource(Resource.string.pa_message, R.string.message_pa);
+                    registerStringResource(Resource.string.pa_message, R.string.pa_message);
                     registerDrawableResource(Resource.drawable.pa_icon, R.drawable.ic_info_black_24dp);
+
+                    registerLayoutResource(Resource.layout.pss_layout, R.layout.dialog_pss);
+                    registerIdResource(Resource.id.pss_title, R.id.pss_title);
+                    registerStringResource(Resource.string.pss_title, R.string.pss_title);
+                    registerIdResource(Resource.id.pss_brightness, R.id.pss_seek_bar_brightness);
+
+                    try {
+                        resourceManager.setOnEventListener(new IEventListener.Stub() {
+                            @Override
+                            public void onBrightnessChanged(int brightness) throws RemoteException {
+                                Log.v(TAG, "onBrightnessChanged() " + brightness);
+                            }
+                        });
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     Log.e(TAG, "bind resource manager error");
                 }

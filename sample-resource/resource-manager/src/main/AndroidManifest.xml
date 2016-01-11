@@ -29,6 +29,8 @@
             <intent-filter>
                 <action android:name="sg.shun.gao.action.PA_ON" />
                 <action android:name="sg.shun.gao.action.PA_OFF" />
+                <action android:name="sg.shun.gao.action.PSS_ON" />
+                <action android:name="sg.shun.gao.action.PSS_OFF" />
             </intent-filter>
         </service>
     </application>

@@ -6,10 +6,9 @@ include ':common-android-library'
 
 //include ':sample-permission:service-provider', ':sample-permission:service-consumer', ':sample-permission:evil-attacter'
 
-//include ':sample-touch'
-//include ':interactive-chart'
+//include ':sample-touch', ':interactive-chart'
 
-//include ':sample-resource:resource-manager', ':sample-resource:resource-client', ':sample-resource:resource-lib'
+include ':sample-resource:resource-manager', ':sample-resource:resource-client', ':sample-resource:resource-lib'
 
 //include ':window-service'
 

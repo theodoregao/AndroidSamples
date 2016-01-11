@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="aero.panasonic.resource.lib">
+    package="sg.shun.gao.resource.lib">
 
     <application
         android:allowBackup="true"

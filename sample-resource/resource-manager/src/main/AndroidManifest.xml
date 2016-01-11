@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="aero.panasonic.resource.manager">
+    package="sg.shun.gao.resource.manager">
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
@@ -27,8 +27,8 @@
             </intent-filter>
 
             <intent-filter>
-                <action android:name="aero.panasonic.action.PA_ON" />
-                <action android:name="aero.panasonic.action.PA_OFF" />
+                <action android:name="sg.shun.gao.action.PA_ON" />
+                <action android:name="sg.shun.gao.action.PA_OFF" />
             </intent-filter>
         </service>
     </application>

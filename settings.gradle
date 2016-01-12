@@ -1,4 +1,4 @@
-include ':common-android-library'
+//include ':common-android-library'
 
 //include ':sample-android'
 
@@ -12,4 +12,4 @@ include ':sample-resource:resource-manager', ':sample-resource:resource-client',
 
 //include ':window-service'
 
-include ':prototype'
+//include ':prototype'

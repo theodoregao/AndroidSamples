@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="gao.shun.sg.prototype.ToolDetailActivity">
+
+    <include layout="@layout/toolbar" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"
+        android:fillViewport="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="80dp">
+
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="match_parent"
+                android:layout_height="220dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginBottom="8dp"
+                android:contentDescription="@null"
+                android:src="#FFBBBBBB" />
+
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/image"
+                android:layout_alignStart="@+id/image"
+                android:paddingBottom="8dp"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:text="Acme 17 drill press"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="26sp" />
+
+            <TextView
+                android:id="@+id/detail_0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/image"
+                android:layout_below="@+id/image"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:text="3/4 HP"
+                android:textColor="@color/black_87"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/detail_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/image"
+                android:layout_below="@+id/detail_0"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:text="8 throat"
+                android:textColor="@color/black_87"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/detail_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/image"
+                android:layout_below="@+id/price"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:text="8 throat"
+                android:textColor="@color/black_87"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/detail_1"
+                android:layout_marginTop="16dp"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:text="Romance of the Three Kingdoms, attributed to Luo Guanzhong, is a historical novel set in the turbulent years towards the end of the Han dynasty and the Three Kingdoms period in Chinese history, starting in 169 AD and ending with the reunification of the land in 280.
+
+The story – part historical, part legend, and part mythical – romanticises and dramatises the lives of feudal lords and their retainers, who tried to replace the dwindling Han dynasty or restore it. While the novel follows hundreds of characters, the focus is mainly on the three power blocs that emerged from the remnants of the Han dynasty, and would eventually form the three states of Cao Wei, Shu Han, and Eastern Wu. The novel deals with the plots, personal and military battles, intrigues, and struggles of these states to achieve dominance for almost 100 years.
+
+Romance of the Three Kingdoms is acclaimed as one of the Four Great Classical Novels of Chinese literature; it has a total of 800,000 words and nearly a thousand dramatic characters (mostly historical) in 120 chapters.[1] The novel is among the most beloved works of literature in East Asia,[2] and its literary influence in the region has been compared to that of the works of Shakespeare on English literature.[3] It is arguably the most widely read historical novel in late imperial and modern China."
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/black_87"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/image"
+                android:layout_below="@+id/image"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:text="$750"
+                android:textColor="@color/black_87"
+                android:textSize="20sp" />
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="@dimen/default_padding"
+        android:src="@drawable/ic_attach_money_black_24dp" />
+
+</RelativeLayout>

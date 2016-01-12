@@ -19,4 +19,5 @@
     <string name="stationary">Stationary</string>
     <string name="handheld">Handheld</string>
     <string name="battery">Battery</string>
+    <string name="title_activity_tool_detail">ToolDetailActivity</string>
 </resources>

@@ -55,6 +55,6 @@ public class ToolListFragment extends ListFragment implements AdapterView.OnItem
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         final Tool tool = mToolArrayAdapter.getItem(position);
-//        ToolDetailActivity
+        ToolDetailActivity.startActivity(getActivity(), tool);
     }
 }

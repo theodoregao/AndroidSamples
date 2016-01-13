@@ -1,5 +1,6 @@
 package gao.shun.sg.prototype;
 
+import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
 
 /**
@@ -15,10 +16,16 @@ public enum ToolType {
 
     private final int mToolNameResourceId;
     private final int mToolDescriptionResourceId;
+    private final int mToolImageResourceId;
 
     ToolType(@StringRes int toolName, @StringRes int toolDescription) {
+        this(toolName, toolDescription, 0);
+    }
+
+    ToolType(@StringRes int toolName, @StringRes int toolDescription, @DrawableRes int toolImage) {
         mToolNameResourceId = toolName;
         mToolDescriptionResourceId = toolDescription;
+        mToolImageResourceId = toolImage;
     }
 
     @StringRes
@@ -29,5 +36,10 @@ public enum ToolType {
     @StringRes
     public int getToolDescriptionResourceId() {
         return mToolDescriptionResourceId;
+    }
+
+    @DrawableRes
+    int getToolImageResourceId() {
+        return mToolImageResourceId;
     }
 }

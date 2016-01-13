@@ -20,4 +20,7 @@
     <string name="handheld">Handheld</string>
     <string name="battery">Battery</string>
     <string name="title_activity_tool_detail">ToolDetailActivity</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

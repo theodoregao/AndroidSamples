@@ -19,7 +19,7 @@ public enum ToolType {
     private final int mToolImageResourceId;
 
     ToolType(@StringRes int toolName, @StringRes int toolDescription) {
-        this(toolName, toolDescription, 0);
+        this(toolName, toolDescription, R.drawable.dog);
     }
 
     ToolType(@StringRes int toolName, @StringRes int toolDescription, @DrawableRes int toolImage) {

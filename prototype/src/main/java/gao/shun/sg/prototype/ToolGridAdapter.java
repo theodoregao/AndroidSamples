@@ -6,13 +6,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
+import sg.shun.gao.libs.android.widget.CaptionedImageView;
+
 /**
  * Created by Theodore on 2016/1/13.
  */
 public class ToolGridAdapter extends BaseAdapter {
 
-    public ToolGridAdapter(Context context) {
+    private final ToolType[] mToolTypes = ToolType.values();
+    private final Context mContext;
 
+    public ToolGridAdapter(Context context) {
+        mContext = context;
     }
 
     /**
@@ -22,7 +27,7 @@ public class ToolGridAdapter extends BaseAdapter {
      */
     @Override
     public int getCount() {
-        return 0;
+        return mToolTypes.length;
     }
 
     /**
@@ -34,7 +39,7 @@ public class ToolGridAdapter extends BaseAdapter {
      */
     @Override
     public Object getItem(int position) {
-        return null;
+        return mToolTypes[position];
     }
 
     /**
@@ -45,7 +50,7 @@ public class ToolGridAdapter extends BaseAdapter {
      */
     @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
     /**
@@ -68,6 +73,12 @@ public class ToolGridAdapter extends BaseAdapter {
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        return null;
+        final CaptionedImageView captionedImageView;
+        if (convertView == null) captionedImageView = new CaptionedImageView(mContext);
+        else captionedImageView = (CaptionedImageView) convertView;
+        final ToolType toolType = mToolTypes[position];
+        captionedImageView.setImage(mContext.getResources().getDrawable(toolType.getToolImageResourceId()));
+        captionedImageView.setText(mContext.getResources().getString(toolType.getToolNameResourceId()));
+        return captionedImageView;
     }
 }

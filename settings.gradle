@@ -8,12 +8,14 @@ include ':common-android-library'
 
 //include ':sample-touch', ':interactive-chart'
 
-include ':sample-resource:resource-manager', ':sample-resource:resource-client', ':sample-resource:resource-lib'
+//include ':sample-resource:resource-manager', ':sample-resource:resource-client', ':sample-resource:resource-lib'
 
 //include ':window-service'
 
-include ':prototype'
+//include ':prototype'
 
-include ':shareduserid:shareduseridapp1', ':shareduserid:shareduseridapp2'
+//include ':shareduserid:shareduseridapp1', ':shareduserid:shareduseridapp2'
 
+//include ':sample-renderscript'
 
+include ':sample-widget:popup-server', ':sample-widget:widget-app'

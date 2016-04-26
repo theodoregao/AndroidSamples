@@ -18,4 +18,4 @@ include ':common-android-library'
 
 //include ':sample-renderscript'
 
-include ':sample-widget:popup-server', ':sample-widget:widget-app'
+include ':sample-widget:popup-server', ':sample-widget:widget-app', ':sample-widget:widget-with-button-and-list', ':sample-widget:resource'

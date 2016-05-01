@@ -18,4 +18,10 @@ include ':common-android-library'
 
 //include ':sample-renderscript'
 
-include ':sample-widget:popup-server', ':sample-widget:widget-app', ':sample-widget:widget-with-button-and-list', ':sample-widget:resource'
+include ':sample-widget:popup-server',
+        ':sample-widget:widget-app',
+        ':sample-widget:widget-with-button-and-list',
+        ':sample-widget:resource',
+        ':sample-widget:widget-host',
+        ':sample-widget:widget-with-server',
+        ':sample-widget:fragment-home-screen'

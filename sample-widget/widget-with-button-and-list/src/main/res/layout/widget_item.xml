@@ -17,8 +17,8 @@
     android:id="@+id/widget_item"
     android:layout_width="120dp"
     android:layout_height="120dp"
+    android:background="@android:color/holo_green_dark"
     android:gravity="center"
-    android:background="@drawable/widget_item_background"
     android:textColor="#ffffff"
-    android:textStyle="bold"
-    android:textSize="44sp" />
+    android:textSize="44sp"
+    android:textStyle="bold" />

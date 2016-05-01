@@ -1,13 +1,17 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 'Google Inc.:Google APIs:23'
-    buildToolsVersion "23.0.2"
+    compileSdkVersion 21
+    buildToolsVersion "21.0.0"
 
     defaultConfig {
-        applicationId "com.example.android.stackwidget"
+        applicationId "com.lgfischer.widgethost"
         minSdkVersion 16
         targetSdkVersion 16
+        compileOptions {
+            sourceCompatibility JavaVersion.VERSION_1_5
+            targetCompatibility JavaVersion.VERSION_1_5
+        }
     }
 
     buildTypes {
@@ -16,11 +20,4 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
-    lintOptions {
-        abortOnError false
-    }
-
-}
-dependencies {
-    compile 'com.android.support:appcompat-v7:23.+'
 }

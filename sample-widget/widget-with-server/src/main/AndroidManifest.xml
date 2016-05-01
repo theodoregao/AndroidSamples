@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="shun.gao.widget.server">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <!--<receiver android:name=".WidgetProvider">-->
+        <!--<intent-filter>-->
+        <!--<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />-->
+        <!--</intent-filter>-->
+
+        <!--<meta-data-->
+        <!--android:name="android.appwidget.provider"-->
+        <!--android:resource="@xml/widget_info" />-->
+        <!--</receiver>-->
+
+        <receiver android:name=".UpdateWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info" />
+        </receiver>
+
+        <activity android:name=".WidgetActivcity" />
+
+        <service android:name=".WidgetService" />
+        <service android:name=".UpdateWidgetProvider$UpdateService" />
+
+        <receiver
+            android:name=".WidgetReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="shun.gao.action.WIDGET_CLICKED" />
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>

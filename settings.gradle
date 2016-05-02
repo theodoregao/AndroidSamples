@@ -24,4 +24,5 @@ include ':sample-widget:popup-server',
         ':sample-widget:resource',
         ':sample-widget:widget-host',
         ':sample-widget:widget-with-server',
-        ':sample-widget:fragment-home-screen'
+        ':sample-widget:fragment-home-screen',
+        ':sample-widget:alarm-update'

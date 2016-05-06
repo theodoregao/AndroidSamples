@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="activity_main" type="layout" />
-    <item name="button" type="id" />
-    <item name="str" type="string" />
 </resources>

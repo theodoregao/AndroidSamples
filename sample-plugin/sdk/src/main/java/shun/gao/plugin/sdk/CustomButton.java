@@ -60,16 +60,16 @@ public class CustomButton extends Button {
 
     private void init() {
         if (!TextUtils.isEmpty(mAttrsIntent)) {
-            setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent();
-                    intent.setAction(mAttrsIntent);
-                    intent.putExtra(getResources().getString(R.string.EXTRA_CRITICAL_EVENT), mAttrsParams);
-//                    LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
-                    getContext().sendBroadcast(intent);
-                }
-            });
+//            setOnClickListener(new OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    Intent intent = new Intent();
+//                    intent.setAction(mAttrsIntent);
+//                    intent.putExtra(getResources().getString(R.string.EXTRA_CRITICAL_EVENT), mAttrsParams);
+////                    LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
+//                    getContext().sendBroadcast(intent);
+//                }
+//            });
         }
     }
 }

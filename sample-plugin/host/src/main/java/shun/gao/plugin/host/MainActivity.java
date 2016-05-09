@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -37,6 +38,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.activity_main);
 
+        Log.e(TAG, "TextView.class.getClassLoader(): " + TextView.class.getClassLoader());
+        Log.e(TAG, "CustomButton.class.getClassLoader(): " + CustomButton.class.getClassLoader());
+
 //        dexpath = Environment.getExternalStorageDirectory() + File.separator + apkFileName;
 
 //        fileRelease = getDir("dex", 0);
@@ -51,9 +55,21 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             final Context otherContext = createPackageContext("shun.gao.plugin.resource", Context.CONTEXT_IGNORE_SECURITY | CONTEXT_INCLUDE_CODE);
-            Log.e(TAG, "otherContent.getClasLoader(): " + otherContext.getClassLoader());
-            View view = View.inflate(otherContext, shun.gao.plugin.sdk.R.layout.activity_main, null);
+            Log.e(TAG, "otherContent.getClassLoader(): " + otherContext.getClassLoader());
+            View view = getLayoutInflater().inflate(otherContext.getResources().getLayout(shun.gao.plugin.sdk.R.layout.activity_main), null);
+//            View view = View.inflate(otherContext, shun.gao.plugin.sdk.R.layout.activity_main, null);
             setContentView(view);
+            Log.e(TAG, "findViewById(shun.gao.plugin.sdk.R.id.button).getClass().getCanonicalName(): " + findViewById(shun.gao.plugin.sdk.R.id.button).getClass().getCanonicalName());
+            Log.e(TAG, "findViewById(shun.gao.plugin.sdk.R.id.button).getClass().getClassLoader(): " + findViewById(shun.gao.plugin.sdk.R.id.button).getClass().getClassLoader());
+            Log.e(TAG, "CustomButton.class.getClassLoader(): " + CustomButton.class.getClassLoader());
+            CustomButton button = (CustomButton) findViewById(shun.gao.plugin.sdk.R.id.button);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(MainActivity.this, "XXXXXXXXXXXX", Toast.LENGTH_LONG).show();
+                }
+            });
+            Log.e(TAG, "button: " + button.getClass().getCanonicalName());
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -98,5 +114,9 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
 //        LocalBroadcastManager.getInstance(this).unregisterReceiver(CRITICAL_EVENT_RECEIVER);
         unregisterReceiver(CRITICAL_EVENT_RECEIVER);
+    }
+
+    public void onClick(View view) {
+        Toast.makeText(this, "onClick()", Toast.LENGTH_LONG).show();
     }
 }

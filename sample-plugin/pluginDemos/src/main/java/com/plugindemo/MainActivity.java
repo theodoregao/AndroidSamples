@@ -55,6 +55,7 @@ public class MainActivity extends Activity {
         Log.d("DEMO", Activity.class.getClassLoader() + "");
         Log.d("DEMO", (Context.class.getClassLoader().getSystemClassLoader() == ClassLoader.getSystemClassLoader()) + "");
         Log.d("DEMO", ClassLoader.getSystemClassLoader() + "");
+        Log.d("DEMO", "IBean.class.getClassLoader(): " + IBean.class.getClassLoader());
 
         classLoader = new DexClassLoader(dexpath, fileRelease.getAbsolutePath(), null, getClassLoader());
 

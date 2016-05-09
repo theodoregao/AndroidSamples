@@ -5,9 +5,11 @@
     android:layout_height="match_parent">
 
     <shun.gao.plugin.sdk.CustomButton
+        android:id="@id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/str"
+        android:text="bbbb"
+        android:onClick="onClick"
         app:intent="@string/ACTION_CRITICAL_EVENT"
         app:params="from resource" />
 </RelativeLayout>

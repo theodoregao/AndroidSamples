@@ -1,4 +1,5 @@
-include ':common-android-library'
+
+//include ':common-android-library'
 
 //include ':sample-android'
 
@@ -18,14 +19,18 @@ include ':common-android-library'
 
 //include ':sample-renderscript'
 
-include ':sample-widget:popup-server',
-        ':sample-widget:widget-app',
-        ':sample-widget:stack-widget',
-        ':sample-widget:resource',
-        ':sample-widget:widget-host',
-        ':sample-widget:widget-with-server',
-        ':sample-widget:fragment-home-screen',
-        ':sample-widget:alarm-update'
+//include ':sample-widget:popup-server',
+//        ':sample-widget:widget-app',
+//        ':sample-widget:stack-widget',
+//        ':sample-widget:resource',
+//        ':sample-widget:widget-host',
+//        ':sample-widget:widget-with-server',
+//        ':sample-widget:fragment-home-screen',
+//        ':sample-widget:alarm-update'
 
 //include 'sample-plugin:pluginImpl', 'sample-plugin:pluginSDKs', 'sample-plugin:pluginDemos'
 //include 'sample-plugin:sdk', 'sample-plugin:host', 'sample-plugin:res'
+
+//include  ':appmanager', ':sample-shell'
+
+include ':sample-usage-stats'

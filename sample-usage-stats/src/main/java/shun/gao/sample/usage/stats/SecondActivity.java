@@ -1,5 +1,10 @@
 package shun.gao.sample.usage.stats;
 
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.IBinder;
+import android.os.RemoteException;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,14 +15,22 @@ public class SecondActivity extends AppCompatActivity {
 
     private static final String TAG = SecondActivity.class.getSimpleName();
 
-    private AnalyticsTimeInterval analyticsTimeInterval;
+    private AnalyticService serviceConnection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
 
-        analyticsTimeInterval = new AnalyticsTimeInterval(this);
+        serviceConnection = new AnalyticService();
+
+        bindService(new Intent(this, SimpleAnalyticService.class), serviceConnection, BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        serviceConnection.untimestamp();
     }
 
     public void onClick(View view) {
@@ -37,17 +50,55 @@ public class SecondActivity extends AppCompatActivity {
     }
 
     private void print() {
-        long time = analyticsTimeInterval.calculateTimeInterval(SecondActivity.class.getSimpleName() + " on") / 1000;
-        Log.v(TAG, "time: " + time);
-
-        ((TextView) findViewById(R.id.textView)).setText(time + " seconds");
+        ((TextView) findViewById(R.id.textView)).setText(serviceConnection.getTime() + " seconds");
     }
 
     private void addStamp() {
-        analyticsTimeInterval.addTimeStamp(SecondActivity.class.getSimpleName() + " on");
+        serviceConnection.timestamp();
     }
 
     private void removeStamp() {
-        analyticsTimeInterval.addTimeStamp(SecondActivity.class.getSimpleName() + " off");
+        serviceConnection.untimestamp();
     }
+
+    class AnalyticService implements ServiceConnection {
+
+        ISimpleAnalytics analytics;
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            analytics = ISimpleAnalytics.Stub.asInterface(service);
+            if (analytics != null) timestamp();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+
+        public void timestamp() {
+            try {
+                analytics.timestamp(SecondActivity.TAG);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void untimestamp() {
+            try {
+                analytics.timestamp(SecondActivity.TAG + "OFF");
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public int getTime() {
+            try {
+                return analytics.getTimeCount(SecondActivity.TAG);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+                return -1;
+            }
+        }
+    };
 }

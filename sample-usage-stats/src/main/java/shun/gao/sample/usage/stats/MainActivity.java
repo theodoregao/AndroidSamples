@@ -28,33 +28,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        fillStats();
-
-
-    }
-
-    private void fillStats() {
-        if (hasPermission()){
-//            getStats();
-        }else{
-            requestPermission();
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d("MainActivity", "resultCode " + resultCode);
-        switch (requestCode){
-            case MY_PERMISSIONS_REQUEST_PACKAGE_USAGE_STATS:
-                fillStats();
-                break;
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        getStats(SecondActivity.class.getName());
     }
 
     private void requestPermission() {

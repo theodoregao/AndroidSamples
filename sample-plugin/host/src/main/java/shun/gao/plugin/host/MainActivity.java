@@ -2,9 +2,11 @@ package shun.gao.plugin.host;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Looper;
@@ -37,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.activity_main);
+        setContentView(getResources().getIdentifier("activity_main", "layout", "shun.gao.plugin.resource"));
 
         Log.e(TAG, "TextView.class.getClassLoader(): " + TextView.class.getClassLoader());
         Log.e(TAG, "CustomButton.class.getClassLoader(): " + CustomButton.class.getClassLoader());
@@ -53,25 +56,51 @@ public class MainActivity extends AppCompatActivity {
 //
 //        Log.e(TAG, CustomButton.class.getClassLoader().toString());
 
-        try {
-            final Context otherContext = createPackageContext("shun.gao.plugin.resource", Context.CONTEXT_IGNORE_SECURITY | CONTEXT_INCLUDE_CODE);
-            Log.e(TAG, "otherContent.getClassLoader(): " + otherContext.getClassLoader());
-            View view = getLayoutInflater().inflate(otherContext.getResources().getLayout(shun.gao.plugin.sdk.R.layout.activity_main), null);
-//            View view = View.inflate(otherContext, shun.gao.plugin.sdk.R.layout.activity_main, null);
-            setContentView(view);
-            Log.e(TAG, "findViewById(shun.gao.plugin.sdk.R.id.button).getClass().getCanonicalName(): " + findViewById(shun.gao.plugin.sdk.R.id.button).getClass().getCanonicalName());
-            Log.e(TAG, "findViewById(shun.gao.plugin.sdk.R.id.button).getClass().getClassLoader(): " + findViewById(shun.gao.plugin.sdk.R.id.button).getClass().getClassLoader());
-            Log.e(TAG, "CustomButton.class.getClassLoader(): " + CustomButton.class.getClassLoader());
-            CustomButton button = (CustomButton) findViewById(shun.gao.plugin.sdk.R.id.button);
+//        try {
+//            final Context otherContext = createPackageContext("shun.gao.plugin.resource", Context.CONTEXT_IGNORE_SECURITY | CONTEXT_INCLUDE_CODE);
+//            Log.e(TAG, "otherContent.getClassLoader(): " + otherContext.getClassLoader());
+//            View view = getLayoutInflater().inflate(otherContext.getResources().getLayout(shun.gao.plugin.sdk.R.layout.activity_main), null);
+////            View view = View.inflate(otherContext, shun.gao.plugin.sdk.R.layout.activity_main, null);
+//            setContentView(view);
+//            Log.e(TAG, "findViewById(shun.gao.plugin.sdk.R.id.button).getClass().getCanonicalName(): " + findViewById(shun.gao.plugin.sdk.R.id.button).getClass().getCanonicalName());
+//            Log.e(TAG, "findViewById(shun.gao.plugin.sdk.R.id.button).getClass().getClassLoader(): " + findViewById(shun.gao.plugin.sdk.R.id.button).getClass().getClassLoader());
+//            Log.e(TAG, "CustomButton.class.getClassLoader(): " + CustomButton.class.getClassLoader());
+            CustomButton button = (CustomButton) findViewById(getResources().getIdentifier("button", "id", "shun.gao.plugin.resource"));
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Toast.makeText(MainActivity.this, "XXXXXXXXXXXX", Toast.LENGTH_LONG).show();
                 }
             });
-            Log.e(TAG, "button: " + button.getClass().getCanonicalName());
+//            Log.e(TAG, "button: " + button.getClass().getCanonicalName());
+//        } catch (PackageManager.NameNotFoundException e) {
+//            e.printStackTrace();
+//        }
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        try {
+            super.attachBaseContext(new CustomThemeContextWrapper(newBase));
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
+            super.attachBaseContext(newBase);
+        }
+    }
+
+    private class CustomThemeContextWrapper extends ContextWrapper {
+
+        private Resources resources;
+
+        public CustomThemeContextWrapper(Context base) throws PackageManager.NameNotFoundException {
+            super(base);
+            final Context otherContext = createPackageContext("shun.gao.plugin.resource", Context.CONTEXT_IGNORE_SECURITY | CONTEXT_INCLUDE_CODE);
+            resources = otherContext.getResources();
+        }
+
+        @Override
+        public Resources getResources() {
+            return resources;
         }
     }
 

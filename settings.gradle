@@ -33,4 +33,6 @@
 
 //include  ':appmanager', ':sample-shell'
 
-include ':sample-usage-stats'
+//include ':sample-usage-stats'
+
+include 'sample-nsd:nsd-provider', 'sample-nsd:nsd-consumer'

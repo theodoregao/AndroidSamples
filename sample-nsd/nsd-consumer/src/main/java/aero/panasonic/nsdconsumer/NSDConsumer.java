@@ -32,7 +32,7 @@ public class NSDConsumer extends AppCompatActivity {
 
         @Override
         public void onDiscoveryStopped(String serviceType) {
-            Log.d(TAG, "onDiscoveryStopped() ");
+            Log.d(TAG, "onDiscoveryStopped()");
         }
 
         @Override

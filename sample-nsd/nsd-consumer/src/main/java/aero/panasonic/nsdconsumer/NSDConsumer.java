@@ -8,7 +8,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
+import java.io.DataInputStream;
+import java.io.IOException;
 import java.net.InetAddress;
+import java.net.Socket;
 
 public class NSDConsumer extends AppCompatActivity {
 
@@ -57,7 +60,7 @@ public class NSDConsumer extends AppCompatActivity {
         }
 
         @Override
-        public void onServiceResolved(NsdServiceInfo serviceInfo) {
+        public void onServiceResolved(final NsdServiceInfo serviceInfo) {
             Log.e(TAG, "Resolve Succeeded. " + serviceInfo);
 
             final TextView textView = (TextView) findViewById(R.id.text);
@@ -66,6 +69,29 @@ public class NSDConsumer extends AppCompatActivity {
                 @Override
                 public void run() {
                     textView.setText(text);
+
+                        new Thread() {
+                            @Override
+                            public void run() {
+                                try {
+                                    final Socket socket = new Socket(serviceInfo.getHost().getHostAddress(), serviceInfo.getPort());
+                                    DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
+                                    Log.d(TAG, "message: " + dataInputStream.readUTF());
+
+                                    while (true) {
+                                        final String data = dataInputStream.readUTF();
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                textView.setText(text + "\n" + data);
+                                            }
+                                        });
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }.start();
                 }
             });
         }

@@ -36,5 +36,5 @@
 
 //include 'sample-nsd:nsd-provider', 'sample-nsd:nsd-consumer'
 
-include ':sample_android_id'
+include ':sample-android-id'
 

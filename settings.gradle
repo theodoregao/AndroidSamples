@@ -1,4 +1,3 @@
-
 //include ':common-android-library'
 
 //include ':sample-android'
@@ -35,4 +34,7 @@
 
 //include ':sample-usage-stats'
 
-include 'sample-nsd:nsd-provider', 'sample-nsd:nsd-consumer'
+//include 'sample-nsd:nsd-provider', 'sample-nsd:nsd-consumer'
+
+include ':android_id'
+

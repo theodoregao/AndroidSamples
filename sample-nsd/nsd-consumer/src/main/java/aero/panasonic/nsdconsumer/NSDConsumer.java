@@ -104,6 +104,6 @@ public class NSDConsumer extends AppCompatActivity {
         setContentView(R.layout.activity_nsdconsumer);
 
         NsdManager nsdManager = (NsdManager) getSystemService(Context.NSD_SERVICE);
-        nsdManager.discoverServices("_http._tcp.", NsdManager.PROTOCOL_DNS_SD, mDiscoveryListener);
+        nsdManager.discoverServices("_ep._tcp.", NsdManager.PROTOCOL_DNS_SD, mDiscoveryListener);
     }
 }

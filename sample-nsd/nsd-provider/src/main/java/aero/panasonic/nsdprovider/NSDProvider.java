@@ -70,7 +70,7 @@ public class NSDProvider extends AppCompatActivity {
         NsdServiceInfo nsdServiceInfo = new NsdServiceInfo();
 
         nsdServiceInfo.setServiceName("Smartest Service");
-        nsdServiceInfo.setServiceType("_http._tcp.");
+        nsdServiceInfo.setServiceType("_ep._tcp.");
         mServerSocket = new ServerSocket(0);
         nsdServiceInfo.setPort(mServerSocket.getLocalPort());
 
@@ -123,7 +123,8 @@ public class NSDProvider extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    dataOutputStream.writeUTF("message from server: " + ++count);
+                    if (dataOutputStream != null) dataOutputStream.writeUTF("message from server: " + ++count);
+                    else Log.e(TAG, "no connection!");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

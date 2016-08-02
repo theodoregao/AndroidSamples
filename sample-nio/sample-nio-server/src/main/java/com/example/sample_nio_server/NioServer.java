@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channel;
@@ -41,7 +42,7 @@ public class NioServer extends AppCompatActivity {
     private void startserver() throws IOException {
         Selector selector = Selector.open();
 
-        InetSocketAddress hostAddress = new InetSocketAddress("localhost", 5454);
+        InetSocketAddress hostAddress = new InetSocketAddress(InetAddress.getByName("172.17.128.20"), 5454);
 
         ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
         serverSocketChannel.socket().bind(hostAddress);

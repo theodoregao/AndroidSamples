@@ -12,7 +12,7 @@
         android:layout_width="215dp"
         android:layout_height="42dp"
         android:inputType="textPersonName"
-        android:text="172.17.128."
+        android:text="172.17.128.20"
         android:gravity="center_horizontal"
         android:ems="10"
         tools:layout_editor_absoluteX="84dp"
@@ -32,12 +32,12 @@
 
     <Button
         android:onClick="onClick"
-        android:text="tcp"
+        android:text="ping"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:layout_editor_absoluteX="148dp"
         tools:layout_editor_absoluteY="199dp"
-        android:id="@+id/action_tcp"
+        android:id="@+id/action_ping"
         app:layout_constraintLeft_toLeftOf="@+id/ip"
         tools:layout_constraintLeft_creator="0"
         app:layout_constraintTop_toBottomOf="@+id/ip"
@@ -48,15 +48,31 @@
 
     <Button
         android:onClick="onClick"
-        android:text="udp"
+        android:text="tcp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:layout_editor_absoluteX="148dp"
         tools:layout_editor_absoluteY="279dp"
+        android:id="@+id/action_tcp"
+        app:layout_constraintTop_toBottomOf="@+id/action_ping"
+        android:layout_marginTop="32dp"
+        tools:layout_constraintTop_creator="0"
+        app:layout_constraintRight_toRightOf="@+id/action_ping"
+        tools:layout_constraintRight_creator="0" />
+
+    <Button
+        android:onClick="onClick"
+        android:text="udp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteX="148dp"
+        tools:layout_editor_absoluteY="359dp"
         android:id="@+id/action_udp"
+        app:layout_constraintLeft_toLeftOf="@+id/activity_sample_nio_client"
+        tools:layout_constraintLeft_creator="0"
         app:layout_constraintTop_toBottomOf="@+id/action_tcp"
         android:layout_marginTop="32dp"
         tools:layout_constraintTop_creator="0"
-        app:layout_constraintRight_toRightOf="@+id/action_tcp"
+        app:layout_constraintRight_toRightOf="@+id/activity_sample_nio_client"
         tools:layout_constraintRight_creator="0" />
 </android.support.constraint.ConstraintLayout>

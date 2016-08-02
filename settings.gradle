@@ -1,4 +1,4 @@
-//include ':common-android-library'
+include ':common-android-library'
 
 //include ':sample-android'
 
@@ -36,5 +36,7 @@
 
 //include 'sample-nsd:nsd-provider', 'sample-nsd:nsd-consumer'
 
-include ':sample-android-id'
+//include ':sample-android-id'
+
+include ':sample-nio:sample-nio-server', ':sample-nio:sample-nio-client'
 

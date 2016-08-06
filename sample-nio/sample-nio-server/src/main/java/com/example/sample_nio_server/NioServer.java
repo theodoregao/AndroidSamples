@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.channels.Channel;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.SelectionKey;
@@ -20,6 +21,15 @@ import java.util.Set;
 public class NioServer extends AppCompatActivity {
 
     private static final String TAG = NioServer.class.getSimpleName();
+    private static final int BUFFER_SIZE = 2 * 1024;    // 2K buffer size
+    private static final int NETWORK_ERROR_COUNT_LIMIT = 16;
+
+    private EventSource mEventSource;
+    private ByteBuffer mTcpBuffer;
+    private ByteBuffer mUdpBuffer;
+    private SocketChannel mTcpClient = null;
+
+    private int mNetworkErrorCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +52,7 @@ public class NioServer extends AppCompatActivity {
     private void startserver() throws IOException {
         Selector selector = Selector.open();
 
-        InetSocketAddress hostAddress = new InetSocketAddress(InetAddress.getByName("172.17.128.20"), 5454);
+        InetSocketAddress hostAddress = new InetSocketAddress(InetAddress.getByName("localhost"), 5454);
 
         ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
         serverSocketChannel.socket().bind(hostAddress);
@@ -57,11 +67,37 @@ public class NioServer extends AppCompatActivity {
 //		datagramChannel.register(selector, datagramChannel.validOps());
         datagramChannel.register(selector, SelectionKey.OP_READ);
 
-        SocketChannel tcpClient = null;
-        int emptyCount = 0;
 
-        int tcpCount = 0;
+        mTcpBuffer = ByteBuffer.allocate(BUFFER_SIZE);
+        mTcpBuffer.order(ByteOrder.BIG_ENDIAN);
+        mUdpBuffer = ByteBuffer.allocate(BUFFER_SIZE);
+        mUdpBuffer.order(ByteOrder.BIG_ENDIAN);
+
+        int emptyCount = 0;
         int udpCount = 0;
+        int errorCount = 0;
+
+        mEventSource = new EventSource();
+        mEventSource.setListener(new EventSource.EventListener() {
+            @Override
+            public void onEventReceived(Event event) {
+                Log.v(TAG, event.toString());
+            }
+
+            @Override
+            public void onError(EventSource.EventSourceError eventSourceError) {
+                if (eventSourceError == EventSource.EventSourceError.PackageFormatError && ++mNetworkErrorCount > NETWORK_ERROR_COUNT_LIMIT) {
+                    try {
+                        mTcpClient.close();
+                        mNetworkErrorCount = 0;
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    mTcpClient = null;
+                }
+            }
+        });
+        mEventSource.start();
 
         while (true) {
             System.out.println("waiting for select...");
@@ -73,8 +109,6 @@ public class NioServer extends AppCompatActivity {
                 SelectionKey key = it.next();
                 it.remove();
 
-                System.out.println(key.toString());
-
                 if (!key.isValid()) {
                     System.out.println("not valid key, continue");
                     continue;
@@ -83,37 +117,29 @@ public class NioServer extends AppCompatActivity {
                 Channel channel = key.channel();
 
                 if (key.isAcceptable() && channel == serverSocketChannel) {
+                    Log.v(TAG, "accept");
 
-                    if (tcpClient != null) {
-                        tcpClient.close();
+                    if (mTcpClient != null) {
+                        mTcpClient.close();
                         System.out.println("close tcp client");
                     }
 
-                    tcpClient = serverSocketChannel.accept();
-                    tcpClient.configureBlocking(false);
-                    tcpClient.register(selector, SelectionKey.OP_READ);
-                    System.out.println("accept a new connection from client: " + tcpClient);
-                    Log.v(TAG, "accept a new connection from client: " + tcpClient);
-                } else if (key.isReadable() && channel == tcpClient) {
+                    mTcpClient = serverSocketChannel.accept();
+                    mTcpClient.configureBlocking(false);
+                    mTcpClient.register(selector, SelectionKey.OP_READ);
+                    Log.v(TAG, "accept a new connection from client: " + mTcpClient);
+                } else if (key.isReadable() && mTcpClient != null && channel == mTcpClient) {
+                    Log.v(TAG, "tcp read");
+                    mTcpBuffer.clear();
                     SocketChannel client = (SocketChannel) key.channel();
-                    ByteBuffer buffer = ByteBuffer.allocate(1024);
-                    client.read(buffer);
-                    String output = new String(buffer.array()).trim();
-                    if (output.isEmpty()) {
-                        if (emptyCount++ > 100) {
-                            tcpClient.close();
-                            tcpClient = null;
-                        }
-                    } else emptyCount = 0;
-//					System.out.println("message from tcp: " + output);
-                    System.out.println("tcp count: " + tcpCount++);
-                    Log.v(TAG, "tcp count: " + tcpCount);
-                } else if (key.isReadable() && channel == datagramChannel) {
-                    ByteBuffer buffer = ByteBuffer.allocate(1024);
+                    int size = client.read(mTcpBuffer);
+                    Log.v(TAG, "size = " + size);
+                    mEventSource.feedBytes(mTcpBuffer.array(), 0, size);
+                } else if (key.isReadable() && datagramChannel != null && channel == datagramChannel) {
+                    Log.v(TAG, "udp read");
+                    ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
                     datagramChannel.receive(buffer);
-//					System.out.println("message from udp: " + new String(buffer.array()).trim());
-                    System.out.println("udp count: " + udpCount++);
-                    Log.v(TAG, "udp count: " + udpCount);
+                    Log.v(TAG, "size = " + buffer.remaining());
                 }
             }
         }

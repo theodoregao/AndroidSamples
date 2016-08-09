@@ -166,8 +166,7 @@ public class NioServer extends AppCompatActivity {
                     Log.v(TAG, "udp read");
                     ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
                     datagramChannel.receive(buffer);
-                    int sequence = buffer.getInt();
-                    mEventSource.feedBytes(sequence, buffer.array(), 4, buffer.array().length - 4);
+                    mEventSource.feedBytesWithSequenceNumber(buffer.array());
                     Log.v(TAG, "size = " + buffer.remaining());
                     log(0, "udp read size = " + buffer.remaining());
                 }

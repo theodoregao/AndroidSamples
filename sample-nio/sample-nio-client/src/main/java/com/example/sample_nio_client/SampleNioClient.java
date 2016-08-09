@@ -122,7 +122,7 @@ public class SampleNioClient extends AppCompatActivity {
 
         DatagramChannel datagramChannel = DatagramChannel.open();
 //		datagramChannel.bind(new InetSocketAddress(9999));
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < 1; i++) {
             buf.clear();
             buf.put(getUdpData());
             buf.flip();
@@ -205,7 +205,7 @@ public class SampleNioClient extends AppCompatActivity {
 
         try {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            bos.write(new byte[] {0, 0, 0, 1});
+            bos.write(new byte[] {0, 10, 0, 1});
             bos.write(payloadSizeBytes[2]);
             bos.write(payloadSizeBytes[3]);
             bos.write(testEvent.getBytes());

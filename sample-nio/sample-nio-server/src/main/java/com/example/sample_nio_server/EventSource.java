@@ -76,6 +76,14 @@ public class EventSource {
         feedBytes(bytes, offset, bytes.length - offset);
     }
 
+    public void feedBytesWithSequenceNumber(byte[] bytes) {
+        mByteBuffer.clear();
+        mByteBuffer.put(bytes, 0, 4);
+        mByteBuffer.flip();
+        int sequenceNumber = mByteBuffer.asIntBuffer().get();
+        feedBytes(sequenceNumber, bytes, 4, bytes.length - 4);
+    }
+
     public void feedBytes(byte[] bytes, int offset, int length) {
         feedBytes(Event.INVALID_SEQUENCE_NUMBER, bytes, offset, length);
     }

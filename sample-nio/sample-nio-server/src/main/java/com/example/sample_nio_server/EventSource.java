@@ -31,6 +31,10 @@ public class EventSource {
 
     private byte[] mBufferPayload;
 
+    private int mPackageFormatErrorCount;
+    private int mPayloadJsonFormatErrorCount;
+    private int mEventCount;
+
     public enum EventSourceError {
         PackageFormatError,
         PayloadJsonFormatError
@@ -132,6 +136,19 @@ public class EventSource {
     private void onError(EventSourceError eventSourceError) {
         if (mEventListener != null) mEventListener.onError(eventSourceError);
         if (eventSourceError == EventSourceError.PackageFormatError) mByteBuffer.clear();
+
+        switch (eventSourceError) {
+            case PackageFormatError:
+                mPackageFormatErrorCount++;
+                break;
+
+            case PayloadJsonFormatError:
+                mPayloadJsonFormatErrorCount++;
+                break;
+
+            default:
+                break;
+        }
     }
 
     private void putEvents(List<Event> events) {
@@ -140,6 +157,7 @@ public class EventSource {
 
     private void putEvent(Event event) {
         mEvents.add(event);
+        mEventCount++;
     }
 
     private Event getEvent() throws InterruptedException {
@@ -158,5 +176,16 @@ public class EventSource {
     public interface EventListener {
         void onEventReceived(Event event);
         void onError(EventSourceError eventSourceError);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder(EventSource.class.getSimpleName());
+        stringBuilder.append("{")
+                .append("generated event count: ").append(mEventCount)
+                .append(", package error count: ").append(mPackageFormatErrorCount)
+                .append(", invalid jason format count: ").append(mPayloadJsonFormatErrorCount)
+                .append("}");
+        return stringBuilder.toString();
     }
 }

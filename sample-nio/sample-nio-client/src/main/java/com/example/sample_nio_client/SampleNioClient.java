@@ -23,6 +23,8 @@ import java.util.Random;
 public class SampleNioClient extends AppCompatActivity {
 
     private static final String TAG = SampleNioClient.class.getSimpleName();
+    private static final String HOST = "172.17.4.173";
+    private static final int PORT = 8086;
 
     private static final int SLEEP_INTERVAL = 1000;
 
@@ -64,7 +66,7 @@ public class SampleNioClient extends AppCompatActivity {
 
     private void tcp() throws IOException {
         TextView ip = (TextView) findViewById(R.id.ip);
-        InetSocketAddress hoAddress = new InetSocketAddress(/*InetAddress.getByName(ip.getText().toString().trim())*/"localhost", 5454);
+        InetSocketAddress hoAddress = new InetSocketAddress(/*InetAddress.getByName(ip.getText().toString().trim())*/HOST, PORT);
         final SocketChannel socketChannel = SocketChannel.open(hoAddress);
 
         final Random random = new Random();
@@ -116,17 +118,15 @@ public class SampleNioClient extends AppCompatActivity {
 
     private void sendMessage(int index, int n) throws IOException, InterruptedException {
         Random random = new Random();
-        String data = "data from udp server " + index;
         ByteBuffer buf = ByteBuffer.allocate(1024);
 
         DatagramChannel datagramChannel = DatagramChannel.open();
 //		datagramChannel.bind(new InetSocketAddress(9999));
         for (int i = 0; i < n; i++) {
-            String d = data + " " + i + "/" + n;
             buf.clear();
-            buf.put(d.getBytes());
+            buf.put(getUdpData());
             buf.flip();
-            datagramChannel.send(buf, new InetSocketAddress(5454));
+            datagramChannel.send(buf, new InetSocketAddress(PORT));
 
             Thread.sleep(random.nextInt(1000));
         }
@@ -143,8 +143,19 @@ public class SampleNioClient extends AppCompatActivity {
                 "        \"param2\":\"(String)\"\n" +
                 "     }\n" +
                 "}";
+
+
+        final String invalidEvent = "{\n" +
+                "    \"event_name\":\"(String - Event Name)\",\n" +
+                "    \"data\":\n" +
+                "     { \n" +
+                "        \"param1\":\"(String)\", \n" +
+                "        \"param2\":\"(String)\"\n" +
+                "     }\n" +
+                "";
         int payloadSize = testEvent.getBytes().length;
         byte[] payloadSizeBytes = ByteBuffer.allocate(4).putInt(payloadSize).array();
+        byte[] invalidPayloadSizeBytes = ByteBuffer.allocate(4).putInt(invalidEvent.getBytes().length).array();
 
         try {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -154,9 +165,56 @@ public class SampleNioClient extends AppCompatActivity {
             bos.write(payloadSizeBytes[2]);
             bos.write(payloadSizeBytes[3]);
             bos.write(testEvent.getBytes());
+            bos.write(invalidPayloadSizeBytes[2]);
+            bos.write(invalidPayloadSizeBytes[3]);
+            bos.write(invalidEvent.getBytes());
             bos.write(payloadSizeBytes[2]);
             bos.write(payloadSizeBytes[3]);
             bos.write(testEvent.getBytes());
+            bos.write(payloadSizeBytes[2]);
+            bos.write(payloadSizeBytes[3]);
+            bos.write(testEvent.getBytes());
+            return bos.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new byte[0];
+    }
+
+    private byte[] getUdpData() {
+        final String testEvent = "{\n" +
+                "    \"event_name\":\"(String - Event Name)\",\n" +
+                "    \"data\":\n" +
+                "     { \n" +
+                "        \"param1\":\"(String)\", \n" +
+                "        \"param2\":\"(String)\"\n" +
+                "     }\n" +
+                "}";
+
+        final String invalidEvent = "{\n" +
+                "    \"event_name\":\"(String - Event Name)\",\n" +
+                "    \"data\":\n" +
+                "     { \n" +
+                "        \"param1\":\"(String)\", \n" +
+                "        \"param2\":\"(String)\"\n" +
+                "     }\n" +
+                "";
+        int payloadSize = testEvent.getBytes().length;
+        byte[] payloadSizeBytes = ByteBuffer.allocate(4).putInt(payloadSize).array();
+        byte[] invalidPayloadSizeBytes = ByteBuffer.allocate(4).putInt(invalidEvent.getBytes().length).array();
+
+        try {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            bos.write(new byte[] {0, 0, 0, 1});
+            bos.write(payloadSizeBytes[2]);
+            bos.write(payloadSizeBytes[3]);
+            bos.write(testEvent.getBytes());
+            bos.write(payloadSizeBytes[2]);
+            bos.write(payloadSizeBytes[3]);
+            bos.write(testEvent.getBytes());
+            bos.write(invalidPayloadSizeBytes[2]);
+            bos.write(invalidPayloadSizeBytes[3]);
+            bos.write(invalidEvent.getBytes());
             bos.write(payloadSizeBytes[2]);
             bos.write(payloadSizeBytes[3]);
             bos.write(testEvent.getBytes());

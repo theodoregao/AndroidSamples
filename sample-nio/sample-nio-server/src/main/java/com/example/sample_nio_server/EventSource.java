@@ -21,6 +21,7 @@ public class EventSource {
     private static final int PACKAGE_SIZE = 2 * 1024;
     private static final int BUFFER_SIZE = 2 * PACKAGE_SIZE;
     private static final int BYTE_SIZE_PAYLOAD = 2;
+    private static final int BYTE_SIZE_SEQUENCE_NUMBER = 4;
 
     private Thread mThread;
     private BlockingQueue<Event> mEvents;
@@ -70,10 +71,10 @@ public class EventSource {
 
     public void feedBytesWithSequenceNumber(byte[] bytes, int offset, int length) {
         mByteBuffer.clear();
-        mByteBuffer.put(bytes, offset, 4);
+        mByteBuffer.put(bytes, offset, BYTE_SIZE_SEQUENCE_NUMBER);
         mByteBuffer.flip();
         int sequenceNumber = mByteBuffer.asIntBuffer().get();
-        feedBytes(sequenceNumber, bytes, offset + 4, length - 4);
+        feedBytes(sequenceNumber, bytes, offset + BYTE_SIZE_SEQUENCE_NUMBER, length - BYTE_SIZE_SEQUENCE_NUMBER);
     }
 
     public void feedBytes(byte[] bytes, int offset, int length) {

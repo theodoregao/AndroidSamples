@@ -33,6 +33,7 @@ public class NioServer extends AppCompatActivity {
 
     private static final String TAG = NioServer.class.getSimpleName();
     private static final String HOST = "172.17.4.173";
+    private static final String MULTICAST_HOST = "239.0.0.1";
     private static final int PORT = 8086;
     private static final int BUFFER_SIZE = 2 * 1024;    // 2K buffer size
     private static final int NETWORK_ERROR_COUNT_LIMIT = 16;
@@ -80,7 +81,7 @@ public class NioServer extends AppCompatActivity {
             public void run() {
                 try {
                     MulticastSocket multicastSocket = new MulticastSocket(PORT);
-                    multicastSocket.joinGroup(InetAddress.getByName("239.0.0.1"));
+                    multicastSocket.joinGroup(InetAddress.getByName(MULTICAST_HOST));
                     byte[] data = new byte[BUFFER_SIZE];
                     while(true) {
                         DatagramPacket packet = new DatagramPacket(data, data.length);
@@ -95,6 +96,18 @@ public class NioServer extends AppCompatActivity {
         }.start();
     }
 
+    public static void _pairChannelAndSocket(DatagramChannel channel, MulticastSocket socket) {
+        try {
+            socket.setReuseAddress(true);
+            socket.setBroadcast(true);
+            Field f = channel.getClass().getDeclaredField("socket");
+            f.setAccessible(true);
+            f.set(channel, socket);
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage(), e);
+        }
+    }
+
     private void startserver() throws IOException {
         Selector selector = Selector.open();
 
@@ -106,7 +119,11 @@ public class NioServer extends AppCompatActivity {
 //		serverSocketChannel.register(selector, serverSocketChannel.validOps());
         serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
 
+//        MulticastSocket multicastSocket = new MulticastSocket(PORT);
+//        multicastSocket.joinGroup(InetAddress.getByName(MULTICAST_HOST));
+
         DatagramChannel datagramChannel = DatagramChannel.open();
+//        _pairChannelAndSocket(datagramChannel, multicastSocket);
         datagramChannel.socket().setBroadcast(true);
         datagramChannel.socket().setReuseAddress(true);
         datagramChannel.socket().bind(new InetSocketAddress(PORT));

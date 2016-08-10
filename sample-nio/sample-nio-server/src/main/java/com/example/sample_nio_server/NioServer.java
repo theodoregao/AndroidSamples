@@ -1,5 +1,7 @@
 package com.example.sample_nio_server;
 
+import android.content.Context;
+import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -10,8 +12,11 @@ import android.view.View;
 import android.widget.ListView;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.MulticastSocket;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.Channel;
@@ -48,7 +53,12 @@ public class NioServer extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nio_server);
 
+        WifiManager wm = (WifiManager)getSystemService(Context.WIFI_SERVICE);
+        WifiManager.MulticastLock multicastLock = wm.createMulticastLock("NioServer");
+        multicastLock.acquire();
+
         mHandler = new MessageHandler(Looper.getMainLooper());
+        mEventSource = new EventSource();
 
         mLogs = new LogAdapter(this, R.layout.item_log, new ArrayList<LogItem>());
         ((ListView) findViewById(R.id.list_log)).setAdapter(mLogs);
@@ -61,6 +71,40 @@ public class NioServer extends AppCompatActivity {
                     startserver();
                 } catch (IOException ex) {
                     System.out.println("ERROR");
+                }
+            }
+        }.start();
+
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    //Create a socket and start the communication
+                    MulticastSocket _socket = new MulticastSocket(PORT);
+                    //    Joins the multicastSocket group
+                    _socket.joinGroup(InetAddress.getByName("239.0.0.1"));
+                    byte[] _data = new byte[BUFFER_SIZE];
+                    while(true)
+                    {
+                        try
+                        {
+                            //Datagram for receiving
+                            DatagramPacket packet = new DatagramPacket(_data, _data.length);
+
+                            //Receive the packet, convert it and send it to the Activity class
+                            _socket.receive(packet);
+                            Log.v(TAG, "received: " + new String(_data, packet.getLength()));
+                            mEventSource.feedBytesWithSequenceNumber(_data);
+                        }
+                        catch(IOException e)
+                        {
+                            //Will break when the socket is closed
+                            break;
+                        }
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         }.start();
@@ -79,18 +123,17 @@ public class NioServer extends AppCompatActivity {
 
         DatagramChannel datagramChannel = DatagramChannel.open();
         datagramChannel.socket().setBroadcast(true);
+        datagramChannel.socket().setReuseAddress(true);
         datagramChannel.socket().bind(new InetSocketAddress(PORT));
         datagramChannel.configureBlocking(false);
 //		datagramChannel.register(selector, datagramChannel.validOps());
         datagramChannel.register(selector, SelectionKey.OP_READ);
-
 
         mTcpBuffer = ByteBuffer.allocate(BUFFER_SIZE);
         mTcpBuffer.order(ByteOrder.BIG_ENDIAN);
         mUdpBuffer = ByteBuffer.allocate(BUFFER_SIZE);
         mUdpBuffer.order(ByteOrder.BIG_ENDIAN);
 
-        mEventSource = new EventSource();
         mEventSource.setListener(new EventSource.EventListener() {
             @Override
             public void onEventReceived(Event event) {

@@ -68,20 +68,12 @@ public class EventSource {
         mEventListener = listener;
     }
 
-    public void feedBytes(byte[] bytes) {
-        feedBytes(bytes, 0, bytes.length);
-    }
-
-    public void feedBytes(byte[] bytes, int offset) {
-        feedBytes(bytes, offset, bytes.length - offset);
-    }
-
-    public void feedBytesWithSequenceNumber(byte[] bytes) {
+    public void feedBytesWithSequenceNumber(byte[] bytes, int offset, int length) {
         mByteBuffer.clear();
-        mByteBuffer.put(bytes, 0, 4);
+        mByteBuffer.put(bytes, offset, 4);
         mByteBuffer.flip();
         int sequenceNumber = mByteBuffer.asIntBuffer().get();
-        feedBytes(sequenceNumber, bytes, 4, bytes.length - 4);
+        feedBytes(sequenceNumber, bytes, offset + 4, length - 4);
     }
 
     public void feedBytes(byte[] bytes, int offset, int length) {

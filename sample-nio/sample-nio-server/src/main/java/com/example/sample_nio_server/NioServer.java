@@ -79,31 +79,16 @@ public class NioServer extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    //Create a socket and start the communication
-                    MulticastSocket _socket = new MulticastSocket(PORT);
-                    //    Joins the multicastSocket group
-                    _socket.joinGroup(InetAddress.getByName("239.0.0.1"));
-                    byte[] _data = new byte[BUFFER_SIZE];
-                    while(true)
-                    {
-                        try
-                        {
-                            //Datagram for receiving
-                            DatagramPacket packet = new DatagramPacket(_data, _data.length);
-
-                            //Receive the packet, convert it and send it to the Activity class
-                            _socket.receive(packet);
-                            Log.v(TAG, "received: " + new String(_data, packet.getLength()));
-                            mEventSource.feedBytesWithSequenceNumber(_data);
-                        }
-                        catch(IOException e)
-                        {
-                            //Will break when the socket is closed
-                            break;
-                        }
+                    MulticastSocket multicastSocket = new MulticastSocket(PORT);
+                    multicastSocket.joinGroup(InetAddress.getByName("239.0.0.1"));
+                    byte[] data = new byte[BUFFER_SIZE];
+                    while(true) {
+                        DatagramPacket packet = new DatagramPacket(data, data.length);
+                        multicastSocket.receive(packet);
+                        mEventSource.feedBytesWithSequenceNumber(data, packet.getOffset(), packet.getLength());
                     }
-
                 } catch (IOException e) {
+                    Log.e(TAG, e.getLocalizedMessage());
                     e.printStackTrace();
                 }
             }
@@ -209,7 +194,7 @@ public class NioServer extends AppCompatActivity {
                     Log.v(TAG, "udp read");
                     ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
                     datagramChannel.receive(buffer);
-                    mEventSource.feedBytesWithSequenceNumber(buffer.array());
+                    mEventSource.feedBytesWithSequenceNumber(buffer.array(), 0, buffer.array().length);
                     Log.v(TAG, "size = " + buffer.remaining());
                     log(0, "udp read size = " + buffer.remaining());
                 }

@@ -8,6 +8,8 @@ import android.widget.TextView;
 
 import org.zeromq.ZMQ;
 
+import java.util.Date;
+
 public class JeromqClient extends AppCompatActivity {
 
     private static final String TAG = JeromqClient.class.getSimpleName();
@@ -34,7 +36,8 @@ public class JeromqClient extends AppCompatActivity {
                 ZMQ.Context context = ZMQ.context(1);
                 subscriber = context.socket(ZMQ.SUB);
 
-                subscriber.connect("tcp://localhost:19861");
+                subscriber.connect("tcp://172.17.128.20:19861");
+//                subscriber.connect("tcp://172.17.4.173:19861");
                 while (!Thread.currentThread ().isInterrupted ()) {
                     // Read envelope with address
                     final String address = subscriber.recvStr ();
@@ -47,11 +50,11 @@ public class JeromqClient extends AppCompatActivity {
                         public void run() {
                             switch (address) {
                                 case "A":
-                                    textViewA.setText(contents);
+                                    textViewA.setText(new Date().toString() + ": " + contents);
                                     break;
 
                                 case "B":
-                                    textViewB.setText(contents);
+                                    textViewB.setText(new Date().toString() + ": " + contents.length() + " bytes received");
                                     break;
 
                                 default:

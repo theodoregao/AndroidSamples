@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">JeromqServer</string>
+
+    <string name="publish_a">Start Publish Channel A</string>
+    <string name="stop_publish_a">Stop Publish Channel A</string>
+    <string name="publish_b">Start Publish Channel B</string>
+    <string name="stop_publish_b">Stop Publish Channel B</string>
+</resources>

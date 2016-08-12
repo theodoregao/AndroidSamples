@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">JeromqClient</string>
+
+    <string name="subscribe_channel_a">Subscribe Channel A</string>
+    <string name="unsubscribe_channel_a">Unsubscribe Channel A</string>
+    <string name="subscribe_channel_b">Subscribe Channel B</string>
+    <string name="unsubscribe_channel_b">Unsubscribe Channel B</string>
+</resources>

@@ -14,9 +14,14 @@ import android.widget.ListView;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.DatagramPacket;
+import java.net.DatagramSocketImpl;
+import java.net.DatagramSocketImplFactory;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
+import java.net.NetworkInterface;
+import java.net.SocketAddress;
+import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.Channel;
@@ -34,7 +39,8 @@ public class NioServer extends AppCompatActivity {
     private static final String TAG = NioServer.class.getSimpleName();
     private static final String HOST = "172.17.4.173";
     private static final String MULTICAST_HOST = "239.0.0.1";
-    private static final int PORT = 8086;
+    private static final int TCP_PORT = 8086;
+    private static final int UDP_PORT = 8086;
     private static final int BUFFER_SIZE = 2 * 1024;    // 2K buffer size
     private static final int NETWORK_ERROR_COUNT_LIMIT = 16;
 
@@ -80,7 +86,7 @@ public class NioServer extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    MulticastSocket multicastSocket = new MulticastSocket(PORT);
+                    MulticastSocket multicastSocket = new MulticastSocket(UDP_PORT);
                     multicastSocket.joinGroup(InetAddress.getByName(MULTICAST_HOST));
                     byte[] data = new byte[BUFFER_SIZE];
                     while(true) {
@@ -111,7 +117,7 @@ public class NioServer extends AppCompatActivity {
     private void startserver() throws IOException {
         Selector selector = Selector.open();
 
-        InetSocketAddress hostAddress = new InetSocketAddress(InetAddress.getByName(HOST), PORT);
+        InetSocketAddress hostAddress = new InetSocketAddress(InetAddress.getByName(HOST), TCP_PORT);
 
         ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
         serverSocketChannel.socket().bind(hostAddress);
@@ -119,17 +125,18 @@ public class NioServer extends AppCompatActivity {
 //		serverSocketChannel.register(selector, serverSocketChannel.validOps());
         serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
 
-//        MulticastSocket multicastSocket = new MulticastSocket(PORT);
-//        multicastSocket.joinGroup(InetAddress.getByName(MULTICAST_HOST));
 
-        DatagramChannel datagramChannel = DatagramChannel.open();
-//        _pairChannelAndSocket(datagramChannel, multicastSocket);
-        datagramChannel.socket().setBroadcast(true);
-        datagramChannel.socket().setReuseAddress(true);
-        datagramChannel.socket().bind(new InetSocketAddress(PORT));
-        datagramChannel.configureBlocking(false);
-//		datagramChannel.register(selector, datagramChannel.validOps());
-        datagramChannel.register(selector, SelectionKey.OP_READ);
+//        DatagramChannel datagramChannel = DatagramChannel.open();
+////        _pairChannelAndSocket(datagramChannel, multicastSocket);
+//        MyDatagramSocketImplFactory factory = new MyDatagramSocketImplFactory();
+//        factory.createDatagramSocketImpl().setOption(SocketOptions.IP_MULTICAST_IF, );
+//        datagramChannel.socket().setDatagramSocketImplFactory(factory);
+//        datagramChannel.socket().setBroadcast(true);
+//        datagramChannel.socket().setReuseAddress(true);
+////        datagramChannel.socket().bind(new InetSocketAddress(UDP_PORT));
+//        datagramChannel.configureBlocking(false);
+////		datagramChannel.register(selector, datagramChannel.validOps());
+//        datagramChannel.register(selector, SelectionKey.OP_READ);
 
         mTcpBuffer = ByteBuffer.allocate(BUFFER_SIZE);
         mTcpBuffer.order(ByteOrder.BIG_ENDIAN);
@@ -207,13 +214,13 @@ public class NioServer extends AppCompatActivity {
                     Log.v(TAG, "size = " + size);
                     mEventSource.feedBytes(mTcpBuffer.array(), 0, size);
                     log(0, "tcp read size = " + size);
-                } else if (key.isReadable() && datagramChannel != null && channel == datagramChannel) {
-                    Log.v(TAG, "udp read");
-                    ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
-                    datagramChannel.receive(buffer);
-                    mEventSource.feedBytesWithSequenceNumber(buffer.array(), 0, buffer.array().length);
-                    Log.v(TAG, "size = " + buffer.remaining());
-                    log(0, "udp read size = " + buffer.remaining());
+//                } else if (key.isReadable() && datagramChannel != null && channel == datagramChannel) {
+//                    Log.v(TAG, "udp read");
+//                    ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
+//                    datagramChannel.receive(buffer);
+//                    mEventSource.feedBytesWithSequenceNumber(buffer.array(), 0, buffer.array().length);
+//                    Log.v(TAG, "size = " + buffer.remaining());
+//                    log(0, "udp read size = " + buffer.remaining());
                 }
             }
         }
@@ -254,5 +261,116 @@ public class NioServer extends AppCompatActivity {
         msg.arg1 = logLevel;
         msg.obj = message;
         mHandler.sendMessage(msg);
+    }
+
+    private static class MyDatagramSocketImplFactory implements DatagramSocketImplFactory {
+
+        @Override
+        public DatagramSocketImpl createDatagramSocketImpl() {
+
+            MulticastSocket multicastSocket = null;
+            try {
+                multicastSocket = new MulticastSocket(TCP_PORT);
+                multicastSocket.joinGroup(InetAddress.getByName(MULTICAST_HOST));
+                return new MyDatagramSocketImpl(multicastSocket);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return new MyDatagramSocketImpl(multicastSocket);
+        }
+    }
+
+    private static class MyDatagramSocketImpl extends DatagramSocketImpl {
+
+        private MulticastSocket mMulticastSocket;
+
+        MyDatagramSocketImpl(MulticastSocket multicastSocket) {
+            mMulticastSocket = multicastSocket;
+        }
+
+        @Override
+        protected void bind(int port, InetAddress addr) throws SocketException {
+            mMulticastSocket.bind(InetSocketAddress.createUnresolved(addr.getHostAddress(), port));
+        }
+
+        @Override
+        protected void close() {
+            mMulticastSocket.close();
+        }
+
+        @Override
+        protected void create() throws SocketException {
+
+        }
+
+        @Override
+        protected byte getTTL() throws IOException {
+            return mMulticastSocket.getTTL();
+        }
+
+        @Override
+        protected int getTimeToLive() throws IOException {
+            return mMulticastSocket.getTimeToLive();
+        }
+
+        @Override
+        protected void join(InetAddress addr) throws IOException {
+            mMulticastSocket.joinGroup(addr);
+        }
+
+        @Override
+        protected void joinGroup(SocketAddress addr, NetworkInterface netInterface) throws IOException {
+            mMulticastSocket.joinGroup(addr, netInterface);
+        }
+
+        @Override
+        protected void leave(InetAddress addr) throws IOException {
+            mMulticastSocket.leaveGroup(addr);
+        }
+
+        @Override
+        protected void leaveGroup(SocketAddress addr, NetworkInterface netInterface) throws IOException {
+            mMulticastSocket.leaveGroup(addr, netInterface);
+        }
+
+        @Override
+        protected int peek(InetAddress sender) throws IOException {
+            return 0;
+        }
+
+        @Override
+        protected void receive(DatagramPacket pack) throws IOException {
+            mMulticastSocket.receive(pack);
+        }
+
+        @Override
+        protected void send(DatagramPacket pack) throws IOException {
+            mMulticastSocket.send(pack);
+        }
+
+        @Override
+        protected void setTimeToLive(int ttl) throws IOException {
+            mMulticastSocket.setTimeToLive(ttl);
+        }
+
+        @Override
+        protected void setTTL(byte ttl) throws IOException {
+            mMulticastSocket.setTTL(ttl);
+        }
+
+        @Override
+        protected int peekData(DatagramPacket pack) throws IOException {
+            return 0;
+        }
+
+        @Override
+        public Object getOption(int optID) throws SocketException {
+            return null;
+        }
+
+        @Override
+        public void setOption(int optID, Object val) throws SocketException {
+
+        }
     }
 }

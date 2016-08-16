@@ -14,17 +14,21 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.NetworkInterface;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 public class SampleNioClient extends AppCompatActivity {
 
     private static final String TAG = SampleNioClient.class.getSimpleName();
-    private static final String HOST = "172.17.4.173";
-    private static final int PORT = 8086;
+    private static String HOST = "172.17.4.173";
+    private static final int TCP_PORT = 52551;
+    private static final int UDP_PORT = 52550;
 
     private static final int SLEEP_INTERVAL = 1000;
 
@@ -32,6 +36,8 @@ public class SampleNioClient extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sample_nio_client);
+
+        HOST = getIPAddress(true);
     }
 
     public void onClick(final View view) {
@@ -66,7 +72,7 @@ public class SampleNioClient extends AppCompatActivity {
 
     private void tcp() throws IOException {
         TextView ip = (TextView) findViewById(R.id.ip);
-        InetSocketAddress hoAddress = new InetSocketAddress(/*InetAddress.getByName(ip.getText().toString().trim())*/HOST, PORT);
+        InetSocketAddress hoAddress = new InetSocketAddress(/*InetAddress.getByName(ip.getText().toString().trim())*/HOST, TCP_PORT);
         final SocketChannel socketChannel = SocketChannel.open(hoAddress);
 
         final Random random = new Random();
@@ -126,7 +132,7 @@ public class SampleNioClient extends AppCompatActivity {
             buf.clear();
             buf.put(getUdpData());
             buf.flip();
-            datagramChannel.send(buf, new InetSocketAddress(PORT));
+            datagramChannel.send(buf, new InetSocketAddress(UDP_PORT));
 
             Thread.sleep(random.nextInt(1000));
         }
@@ -259,5 +265,32 @@ public class SampleNioClient extends AppCompatActivity {
     public static void hideKeyboardFrom(Context context, View view) {
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    public static String getIPAddress(boolean useIPv4) {
+        try {
+            List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
+            for (NetworkInterface intf : interfaces) {
+                List<InetAddress> addrs = Collections.list(intf.getInetAddresses());
+                for (InetAddress addr : addrs) {
+                    if (!addr.isLoopbackAddress()) {
+                        String sAddr = addr.getHostAddress();
+                        //boolean isIPv4 = InetAddressUtils.isIPv4Address(sAddr);
+                        boolean isIPv4 = sAddr.indexOf(':')<0;
+
+                        if (useIPv4) {
+                            if (isIPv4)
+                                return sAddr;
+                        } else {
+                            if (!isIPv4) {
+                                int delim = sAddr.indexOf('%'); // drop ip6 zone suffix
+                                return delim<0 ? sAddr.toUpperCase() : sAddr.substring(0, delim).toUpperCase();
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception ex) { } // for now eat exceptions
+        return "";
     }
 }

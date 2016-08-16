@@ -81,7 +81,7 @@ public class EventSource {
         feedBytes(Event.INVALID_SEQUENCE_NUMBER, bytes, offset, length);
     }
 
-    public void feedBytes(int sequenceNumber, byte[] bytes, int offset, int length) {
+    public synchronized void feedBytes(int sequenceNumber, byte[] bytes, int offset, int length) {
         if (length > 0) {
             mByteBuffer.clear();
             mByteBuffer.put(bytes, offset, length);
@@ -91,6 +91,7 @@ public class EventSource {
 
             while (mByteBuffer.remaining() >= BYTE_SIZE_PAYLOAD) {
                 // read payload size
+                Log.v(TAG, "remaining: " + mByteBuffer.remaining());
                 byte hi = mByteBuffer.get(mByteBuffer.position());
                 byte lo = mByteBuffer.get(mByteBuffer.position() + 1);
                 int payloadSize = new BigInteger(new byte[] {hi, lo}).intValue();
@@ -101,6 +102,7 @@ public class EventSource {
                     break;
                 }
 
+                Log.v(TAG, "remaining: " + mByteBuffer.remaining());
                 Log.v(TAG, "payload size = " + payloadSize);
 
                 // check whether buffer is ready

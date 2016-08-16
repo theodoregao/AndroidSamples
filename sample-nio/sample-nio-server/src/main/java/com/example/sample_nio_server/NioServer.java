@@ -31,16 +31,18 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 public class NioServer extends AppCompatActivity {
 
     private static final String TAG = NioServer.class.getSimpleName();
     private static final String HOST = "172.17.4.173";
-    private static final String MULTICAST_HOST = "239.0.0.1";
-    private static final int TCP_PORT = 8086;
-    private static final int UDP_PORT = 8086;
+    private static final String MULTICAST_HOST = "239.192.0.91";
+    private static final int TCP_PORT = 52551;
+    private static final int UDP_PORT = 52550;
     private static final int BUFFER_SIZE = 2 * 1024;    // 2K buffer size
     private static final int NETWORK_ERROR_COUNT_LIMIT = 16;
 
@@ -117,7 +119,7 @@ public class NioServer extends AppCompatActivity {
     private void startserver() throws IOException {
         Selector selector = Selector.open();
 
-        InetSocketAddress hostAddress = new InetSocketAddress(InetAddress.getByName(HOST), TCP_PORT);
+        InetSocketAddress hostAddress = new InetSocketAddress(InetAddress.getByName(getIPAddress(true)), TCP_PORT);
 
         ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
         serverSocketChannel.socket().bind(hostAddress);
@@ -372,5 +374,32 @@ public class NioServer extends AppCompatActivity {
         public void setOption(int optID, Object val) throws SocketException {
 
         }
+    }
+
+    public static String getIPAddress(boolean useIPv4) {
+        try {
+            List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
+            for (NetworkInterface intf : interfaces) {
+                List<InetAddress> addrs = Collections.list(intf.getInetAddresses());
+                for (InetAddress addr : addrs) {
+                    if (!addr.isLoopbackAddress()) {
+                        String sAddr = addr.getHostAddress();
+                        //boolean isIPv4 = InetAddressUtils.isIPv4Address(sAddr);
+                        boolean isIPv4 = sAddr.indexOf(':')<0;
+
+                        if (useIPv4) {
+                            if (isIPv4)
+                                return sAddr;
+                        } else {
+                            if (!isIPv4) {
+                                int delim = sAddr.indexOf('%'); // drop ip6 zone suffix
+                                return delim<0 ? sAddr.toUpperCase() : sAddr.substring(0, delim).toUpperCase();
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception ex) { } // for now eat exceptions
+        return "";
     }
 }

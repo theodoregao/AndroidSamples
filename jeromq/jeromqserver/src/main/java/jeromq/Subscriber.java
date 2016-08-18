@@ -1,15 +1,44 @@
 package jeromq;
 
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
+
 import org.zeromq.ZMQ;
-import org.zeromq.ZMQ.Context;
 
 public class Subscriber extends Thread implements Runnable {
+	private static final String TAG = Subscriber.class.getSimpleName();
 
-	private static final String TAG = "jeromq.Subscriber";
-	private Context ctx;
+	private String proxyIp;
+	private int port;	// 6001
+	private ZMQ.Socket mulServiceSubscriber;
+	private Handler handler;
 
-	public Subscriber(Context z_context) {
-		this.ctx = z_context;
+	public Subscriber(String proxyIp, int port) {
+		this.proxyIp = proxyIp;
+		this.port = port;
+	}
+
+	public void setMessageHandler(Handler handler) {
+		this.handler = handler;
+	}
+
+	public void subscribe(final Channel channel) {
+		new Thread() {
+			@Override
+			public void run() {
+				mulServiceSubscriber.subscribe(channel.toString().getBytes());
+			}
+		}.start();
+	}
+
+	public void unsubscribe(final Channel channel) {
+		new Thread() {
+			@Override
+			public void run() {
+				mulServiceSubscriber.unsubscribe(channel.toString().getBytes());
+			}
+		}.start();
 	}
 
 	@Override
@@ -17,24 +46,23 @@ public class Subscriber extends Thread implements Runnable {
 
 		super.run();
 
-		ZMQ.Socket mulServiceSubscriber = ctx.socket(ZMQ.SUB);
-		mulServiceSubscriber.connect("tcp://localhost:6001");
-//		mulServiceSubscriber.subscribe("A".getBytes());
-//		mulServiceSubscriber.subscribe("B".getBytes());
-		mulServiceSubscriber.subscribe("C".getBytes());
+		ZMQ.Context ctx = ZMQ.context(1);
+		mulServiceSubscriber = ctx.socket(ZMQ.SUB);
+		mulServiceSubscriber.connect(Util.formUrl(proxyIp, port));
 
-		System.out.println("jeromq.Subscriber loop started..");
+		Log.v(TAG, "jeromq.Subscriber loop started..");
 
 		while (true) {
-			String content = new String(mulServiceSubscriber.recv(0));
-			System.out.println("jeromq.Subscriber Received : " + content);
+			String channel = mulServiceSubscriber.recvStr();
+			Log.v(TAG, "channel: " + channel);
+			String content = mulServiceSubscriber.recvStr();
+			Log.v(TAG, "content: " + content);
+			if (handler != null) {
+				Message msg = handler.obtainMessage();
+				msg.obj = new JeroMessage(channel, content);
+				handler.sendMessage(msg);
+			}
 		}
-	}
-	
-	public static void main(String[] args) throws InterruptedException {
-		Subscriber subscriber = new Subscriber(ZMQ.context(1));
-		subscriber.start();
-		subscriber.join();
 	}
 
 }

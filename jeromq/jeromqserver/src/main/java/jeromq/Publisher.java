@@ -1,49 +1,55 @@
 package jeromq;
 
+import android.util.Log;
+
 import org.zeromq.ZMQ;
 import org.zeromq.ZMQ.Context;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+
 public class Publisher extends Thread implements Runnable {
+	private static final String TAG = Publisher.class.getSimpleName();
 
-	private static final String TAG = "jeromq.Publisher";
-	private Context ctx;
+	private String proxyIp;
+	private int port;	// 6000
+	private BlockingQueue<JeroMessage> messages;
 
-	public Publisher(Context z_context) {
-		this.ctx = z_context;
+	public Publisher(String proxyIp, int port) {
+		this.proxyIp = proxyIp;
+		this.port = port;
+		messages = new ArrayBlockingQueue<>(1024);
+	}
+
+	public void sendMessage(Channel channel, String message) {
+		messages.add(new JeroMessage(channel, message));
 	}
 
 	@Override
 	public void run() {
-
 		super.run();
 
+		ZMQ.Context ctx = ZMQ.context(1);
 		ZMQ.Socket publisher = ctx.socket(ZMQ.PUB);
-		publisher.connect("tcp://localhost:6000");
+		publisher.connect(Util.formUrl(proxyIp, port));
 		
-		System.out.println("jeromq.Publisher loop started..");
+		Log.v(TAG, "jeromq.Publisher loop started..");
 
-		int count = 0;
-		publisher.sendMore("B".getBytes());
+//		publisher.sendMore(Channel.STATE.name().getBytes());
+
 		while (true) {
-			count++;
-//			publisher.sendMore("A".getBytes());
-//			publisher.send(("A Hello " + count).getBytes(), 0);
-//			publisher.sendMore("B".getBytes());
-			publisher.send(("B Hello " + count).getBytes(), 0);
-//			publisher.sendMore("C".getBytes());
-//			publisher.send(("C Hello " + count).getBytes(), 0);
 			try {
-				Thread.sleep(1000);
+				JeroMessage message = messages.take();
+				Log.v(TAG, "sendMore() " + message.getChannel().toString());
+				publisher.sendMore(message.getChannel());
+				Log.v(TAG, "send() " + message.getMessage());
+				publisher.send(message.getMessage().getBytes(), 0);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
-	}
-	
-	public static void main(String[] args) throws InterruptedException {
-		Publisher publisher = new Publisher(ZMQ.context(1));
-		publisher.start();
-		publisher.join();
 	}
 
 }

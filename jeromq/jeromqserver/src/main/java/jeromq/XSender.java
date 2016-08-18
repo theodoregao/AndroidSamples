@@ -1,11 +1,13 @@
 package jeromq;
 
+import android.util.Log;
+
 import org.zeromq.ZMQ.Context;
 import org.zeromq.ZMQ.Socket;
 
 public class XSender extends Thread implements Runnable {
+	private static final String TAG = XSender.class.getSimpleName();
 
-	private static final String TAG = null;
 	private Socket publisherX;
 	private Context ctx;
 	private Socket subscriberX;
@@ -19,14 +21,14 @@ public class XSender extends Thread implements Runnable {
 	@Override
 	public void run() {
 		super.run();
+		Log.v(TAG, "run()");
 		while (true) {
 			// Read envelope with address
-			System.out.println("jeromq.XSender loop started..");
-
 			String msg = new String(subscriberX.recv(0));
-			System.out.println("jeromq.XSender Received: " + "MSG :" + msg);
-			publisherX.send(msg.getBytes(), 0);
-
+			Log.v(TAG, msg);
+			Log.v(TAG, "" + Channel.isChannel(msg));
+			if (Channel.isChannel(msg)) publisherX.sendMore(msg.getBytes());
+			else publisherX.send(msg.getBytes());
 		}
 
 	}

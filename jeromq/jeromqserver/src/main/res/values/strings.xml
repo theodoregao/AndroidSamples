@@ -5,4 +5,10 @@
     <string name="stop_publish_a">Stop Publish Channel A</string>
     <string name="publish_b">Start Publish Channel B</string>
     <string name="stop_publish_b">Stop Publish Channel B</string>
+
+    <string-array name="channels">
+        <item>STATE</item>
+        <item>APPLICATION</item>
+        <item>COMMAND</item>
+    </string-array>
 </resources>

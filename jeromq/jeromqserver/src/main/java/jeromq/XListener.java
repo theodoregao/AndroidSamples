@@ -1,11 +1,13 @@
 package jeromq;
 
+import android.util.Log;
+
 import org.zeromq.ZMQ.Context;
 import org.zeromq.ZMQ.Socket;
 
 public class XListener extends Thread implements Runnable {
+	private static final String TAG = XListener.class.getSimpleName();
 
-	private static final String TAG = null;
 	private Socket publisherX;
 	private Context ctx;
 	private Socket subscriberX;
@@ -21,10 +23,10 @@ public class XListener extends Thread implements Runnable {
 	public void run() {
 		super.run();
 		while (true) {
-			System.out.println("jeromq.XListener loop started..");
+			Log.v(TAG, "jeromq.XListener loop started..");
 
 			String msg = new String(subscriberX.recvStr());
-			System.out.println("Listener Received: " + "MSG :" + msg);
+			Log.v(TAG, "Listener Received: " + msg);
 			publisherX.send(msg.getBytes(), 0);
 		}
 	}

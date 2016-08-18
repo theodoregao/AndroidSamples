@@ -2,22 +2,39 @@ package jeromq;
 
 import org.zeromq.ZMQ;
 
-public class PubSubProxy {
+public class PubSubProxy extends Thread {
 
-	public static void main(String[] args) throws InterruptedException {
-		ZMQ.Context ctx = ZMQ.context(1);
+	private String ip;
+	private int portXPub;		// 6001
+	private int portXSub;		// 6000
 
-		ZMQ.Socket publisherX = ctx.socket(ZMQ.XPUB);
-		publisherX.bind("tcp://localhost:6001");
-		ZMQ.Socket subscriberX = ctx.socket(ZMQ.XSUB);
-		subscriberX.bind("tcp://localhost:6000");
+	public PubSubProxy(String ip, int portXPub, int portXSub) {
+		this.ip = ip;
+		this.portXPub = portXPub;
+		this.portXSub = portXSub;
+	}
 
-		XSender xSender = new XSender(ctx, subscriberX, publisherX);
-		XListener xListener = new XListener(ctx, publisherX, subscriberX);
-		xSender.start();
-		xListener.start();
-		xSender.join();
-		xListener.join();
+	@Override
+	public void run() {
+		try {
+			ZMQ.Context ctx = ZMQ.context(1);
+
+			ZMQ.Socket publisherX = ctx.socket(ZMQ.XPUB);
+			publisherX.bind(Util.formUrl(ip, portXPub));
+			ZMQ.Socket subscriberX = ctx.socket(ZMQ.XSUB);
+			subscriberX.bind(Util.formUrl(ip, portXSub));
+
+			XSender xSender = new XSender(ctx, subscriberX, publisherX);
+			xSender.start();
+
+			XListener xListener = new XListener(ctx, publisherX, subscriberX);
+			xListener.start();
+
+			xListener.join();
+			xSender.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

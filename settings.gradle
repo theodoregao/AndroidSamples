@@ -40,4 +40,6 @@ include ':common-android-library'
 
 //include ':sample-nio:sample-nio-server', ':sample-nio:sample-nio-client'
 
+include ':sample-view-animator'
+
 include ':jeromq:jeromqserver', ':jeromq:jeromqclient'

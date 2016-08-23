@@ -42,4 +42,4 @@ include ':common-android-library'
 
 include ':sample-view-animator'
 
-include ':jeromq:jeromqserver', ':jeromq:jeromqclient'
+include ':jeromq:jeromqserver', 'jeromq:jeromq-demo'

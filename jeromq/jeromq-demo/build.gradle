@@ -5,7 +5,7 @@ android {
     buildToolsVersion "24.0.0"
 
     defaultConfig {
-        applicationId "sg.shun.gao.jeromq.client"
+        applicationId "sg.shun.gao.test.jeromq.demo"
         minSdkVersion 15
         targetSdkVersion 24
         versionCode 1
@@ -17,11 +17,6 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-    android {
-        lintOptions {
-            abortOnError false
         }
     }
 }

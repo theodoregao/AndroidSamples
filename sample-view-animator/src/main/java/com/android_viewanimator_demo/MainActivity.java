@@ -3,6 +3,8 @@ package com.android_viewanimator_demo;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
@@ -18,6 +20,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 	private static Button btnNext, btnPrevious, btnDelete;
 	private static ViewAnimator viewAnimator;
 
+	private GestureDetector gestureDetector;
+
 	List<View> views;
 	int currentIndex;
 
@@ -29,6 +33,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 		setContentView(R.layout.activity_main);
 		init();
 		setListeners();
+
+		gestureDetector = new GestureDetector(this, new GestureListener());
 	}
 	
 	void init() {
@@ -63,7 +69,6 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 				R.anim.out_left);
 	}
 
-	
 	//Setting listeners to buttons and viewanimator
 	void setListeners() {
 		btnPrevious.setOnClickListener(this);
@@ -73,49 +78,124 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
-		View current = viewAnimator.getCurrentView();
 		switch (v.getId()) {
 		case R.id.buttonNext:
-			if (currentIndex >= views.size() - 1) break;
-			currentIndex++;
-			viewAnimator.setInAnimation(inRight);
-			viewAnimator.setOutAnimation(outLeft);
-			
-			//Show next view
-			viewAnimator.showNext();
-//			viewAnimator.removeView(current);
+			next();
 			break;
 
 		case R.id.buttonPrevious:
-			if (currentIndex <= 0) break;
-			currentIndex--;
-			viewAnimator.setInAnimation(inLeft);
-			viewAnimator.setOutAnimation(outRight);
-
-			//Show next view
-			viewAnimator.showPrevious();
-//			viewAnimator.removeView(current);
+			previous();
 			break;
 
-			case R.id.buttonDelete:
-				if (current == views.get(views.size() - 1)) {
-					viewAnimator.setInAnimation(inLeft);
-					viewAnimator.setOutAnimation(outRight);
-					viewAnimator.showPrevious();
-				}
-				else {
-					viewAnimator.setInAnimation(inRight);
-					viewAnimator.setOutAnimation(outLeft);
-					viewAnimator.showNext();
-				}
+		case R.id.buttonDelete:
+			removeCurrent();
+			break;
 
-				//Show next view
-				viewAnimator.removeView(current);
-				views.remove(current);
-				while (currentIndex > 0 && currentIndex >= views.size()) currentIndex--;
-				viewAnimator.setDisplayedChild(currentIndex);
-				Log.v(TAG, "" + viewAnimator.getCurrentView().getId());
+		default:
+			break;
 		}
 
 	}
+
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		gestureDetector.onTouchEvent(event);
+		return super.onTouchEvent(event);
+	}
+
+	private final class GestureListener extends GestureDetector.SimpleOnGestureListener {
+
+		private static final int SWIPE_THRESHOLD = 100;
+		private static final int SWIPE_VELOCITY_THRESHOLD = 100;
+
+		@Override
+		public boolean onDown(MotionEvent e) {
+			return true;
+		}
+
+		@Override
+		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+			boolean result = false;
+			try {
+				float diffY = e2.getY() - e1.getY();
+				float diffX = e2.getX() - e1.getX();
+				if (Math.abs(diffX) > Math.abs(diffY)) {
+					if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+						if (diffX > 0) {
+							onSwipeRight();
+						} else {
+							onSwipeLeft();
+						}
+					}
+					result = true;
+				}
+				else if (Math.abs(diffY) > SWIPE_THRESHOLD && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
+					if (diffY > 0) {
+						onSwipeBottom();
+					} else {
+						onSwipeTop();
+					}
+				}
+				result = true;
+
+			} catch (Exception exception) {
+				exception.printStackTrace();
+			}
+			return result;
+		}
+	}
+
+	public void onSwipeRight() {
+		previous();
+	}
+
+	public void onSwipeLeft() {
+		next();
+	}
+
+	public void onSwipeTop() {
+
+	}
+
+	public void onSwipeBottom() {
+
+	}
+
+	private void next() {
+		if (currentIndex >= views.size() - 1) return;
+		currentIndex++;
+		viewAnimator.setInAnimation(inRight);
+		viewAnimator.setOutAnimation(outLeft);
+		viewAnimator.showNext();
+	}
+
+	private void previous() {
+		if (currentIndex <= 0) return;
+		currentIndex--;
+		viewAnimator.setInAnimation(inLeft);
+		viewAnimator.setOutAnimation(outRight);
+		viewAnimator.showPrevious();
+	}
+
+	private void removeCurrent() {
+		View current = viewAnimator.getCurrentView();
+		if (current == views.get(views.size() - 1)) {
+			viewAnimator.setInAnimation(inLeft);
+			viewAnimator.setOutAnimation(outRight);
+			viewAnimator.showPrevious();
+		}
+		else {
+			viewAnimator.setInAnimation(inRight);
+			viewAnimator.setOutAnimation(outLeft);
+			viewAnimator.showNext();
+		}
+
+		//Show next view
+		viewAnimator.removeView(current);
+		views.remove(current);
+		while (currentIndex > 0 && currentIndex >= views.size()) currentIndex--;
+		viewAnimator.setDisplayedChild(currentIndex);
+		Log.v(TAG, "" + viewAnimator.getCurrentView().getId());
+	}
+
 }

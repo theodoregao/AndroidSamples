@@ -23,7 +23,7 @@ import jeromq.Subscriber;
 public class JeromqServer extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
 
     private static final String TAG = JeromqServer.class.getSimpleName();
-    private static final String proxyIp = "172.17.128.20";//"localhost";//
+    private static final String proxyIp = "localhost";//
     private Publisher publisher;
     private Subscriber subscriber;
 

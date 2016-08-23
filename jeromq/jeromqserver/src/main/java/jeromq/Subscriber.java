@@ -48,6 +48,26 @@ public class Subscriber extends Thread implements Runnable {
 
 		ZMQ.Context ctx = ZMQ.context(1);
 		mulServiceSubscriber = ctx.socket(ZMQ.SUB);
+//		mulServiceSubscriber.monitor("inproc://monitor.socket", ZMQ.EVENT_ALL);
+//
+//		final ZMQ.Socket monitor = ctx.socket(ZMQ.PAIR);
+//		monitor.connect("inproc://monitor.socket");
+//		new Thread() {
+//			@Override
+//			public void run() {
+//				while (true) {
+//					ZMQ.Event event = ZMQ.Event.recv(monitor);
+////					Log.v(TAG, "monitor: " + event.getEvent());
+//				}
+//			}
+//		}.start();
+//
+//		try {
+//			Thread.sleep(1000);
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+
 		mulServiceSubscriber.connect(Util.formUrl(proxyIp, port));
 
 		Log.v(TAG, "jeromq.Subscriber loop started..");

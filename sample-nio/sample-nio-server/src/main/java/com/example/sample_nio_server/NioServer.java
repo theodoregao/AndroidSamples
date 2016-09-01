@@ -39,7 +39,7 @@ import java.util.Set;
 public class NioServer extends AppCompatActivity {
 
     private static final String TAG = NioServer.class.getSimpleName();
-    private static final String HOST = "172.17.4.173";
+    private static final String HOST = "172.17.4.170";
     private static final String MULTICAST_HOST = "239.192.0.91";
     private static final int TCP_PORT = 52551;
     private static final int UDP_PORT = 52550;
@@ -102,48 +102,6 @@ public class NioServer extends AppCompatActivity {
                 }
             }
         }.start();
-    }
-
-    public static void _pairChannelAndSocket(DatagramChannel channel, MulticastSocket socket) {
-        try {
-            socket.setReuseAddress(true);
-            socket.setBroadcast(true);
-            Field f = channel.getClass().getDeclaredField("socket");
-            f.setAccessible(true);
-            f.set(channel, socket);
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
-        }
-    }
-
-    private void startserver() throws IOException {
-        Selector selector = Selector.open();
-
-        InetSocketAddress hostAddress = new InetSocketAddress(InetAddress.getByName(getIPAddress(true)), TCP_PORT);
-
-        ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
-        serverSocketChannel.socket().bind(hostAddress);
-        serverSocketChannel.configureBlocking(false);
-//		serverSocketChannel.register(selector, serverSocketChannel.validOps());
-        serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
-
-
-//        DatagramChannel datagramChannel = DatagramChannel.open();
-////        _pairChannelAndSocket(datagramChannel, multicastSocket);
-//        MyDatagramSocketImplFactory factory = new MyDatagramSocketImplFactory();
-//        factory.createDatagramSocketImpl().setOption(SocketOptions.IP_MULTICAST_IF, );
-//        datagramChannel.socket().setDatagramSocketImplFactory(factory);
-//        datagramChannel.socket().setBroadcast(true);
-//        datagramChannel.socket().setReuseAddress(true);
-////        datagramChannel.socket().bind(new InetSocketAddress(UDP_PORT));
-//        datagramChannel.configureBlocking(false);
-////		datagramChannel.register(selector, datagramChannel.validOps());
-//        datagramChannel.register(selector, SelectionKey.OP_READ);
-
-        mTcpBuffer = ByteBuffer.allocate(BUFFER_SIZE);
-        mTcpBuffer.order(ByteOrder.BIG_ENDIAN);
-        mUdpBuffer = ByteBuffer.allocate(BUFFER_SIZE);
-        mUdpBuffer.order(ByteOrder.BIG_ENDIAN);
 
         mEventSource.setListener(new EventSource.EventListener() {
             @Override
@@ -173,6 +131,51 @@ public class NioServer extends AppCompatActivity {
             }
         });
         mEventSource.start();
+
+    }
+
+    public static void _pairChannelAndSocket(DatagramChannel channel, MulticastSocket socket) {
+        try {
+            socket.setReuseAddress(true);
+            socket.setBroadcast(true);
+            Field f = channel.getClass().getDeclaredField("socket");
+            f.setAccessible(true);
+            f.set(channel, socket);
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage(), e);
+        }
+    }
+
+    private void startserver() throws IOException {
+        Selector selector = Selector.open();
+
+        InetSocketAddress hostAddress = new InetSocketAddress(InetAddress.getByName(getIPAddress(true)), TCP_PORT);
+
+        ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
+        serverSocketChannel.socket().bind(hostAddress);
+        serverSocketChannel.configureBlocking(false);
+//		serverSocketChannel.register(selector, serverSocketChannel.validOps());
+        serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
+
+        Log.v(TAG, "bind to " + hostAddress);
+
+
+//        DatagramChannel datagramChannel = DatagramChannel.open();
+////        _pairChannelAndSocket(datagramChannel, multicastSocket);
+//        MyDatagramSocketImplFactory factory = new MyDatagramSocketImplFactory();
+//        factory.createDatagramSocketImpl().setOption(SocketOptions.IP_MULTICAST_IF, );
+//        datagramChannel.socket().setDatagramSocketImplFactory(factory);
+//        datagramChannel.socket().setBroadcast(true);
+//        datagramChannel.socket().setReuseAddress(true);
+////        datagramChannel.socket().bind(new InetSocketAddress(UDP_PORT));
+//        datagramChannel.configureBlocking(false);
+////		datagramChannel.register(selector, datagramChannel.validOps());
+//        datagramChannel.register(selector, SelectionKey.OP_READ);
+
+        mTcpBuffer = ByteBuffer.allocate(BUFFER_SIZE);
+        mTcpBuffer.order(ByteOrder.BIG_ENDIAN);
+        mUdpBuffer = ByteBuffer.allocate(BUFFER_SIZE);
+        mUdpBuffer.order(ByteOrder.BIG_ENDIAN);
 
         while (true) {
             System.out.println("waiting for select...");
@@ -263,117 +266,6 @@ public class NioServer extends AppCompatActivity {
         msg.arg1 = logLevel;
         msg.obj = message;
         mHandler.sendMessage(msg);
-    }
-
-    private static class MyDatagramSocketImplFactory implements DatagramSocketImplFactory {
-
-        @Override
-        public DatagramSocketImpl createDatagramSocketImpl() {
-
-            MulticastSocket multicastSocket = null;
-            try {
-                multicastSocket = new MulticastSocket(TCP_PORT);
-                multicastSocket.joinGroup(InetAddress.getByName(MULTICAST_HOST));
-                return new MyDatagramSocketImpl(multicastSocket);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return new MyDatagramSocketImpl(multicastSocket);
-        }
-    }
-
-    private static class MyDatagramSocketImpl extends DatagramSocketImpl {
-
-        private MulticastSocket mMulticastSocket;
-
-        MyDatagramSocketImpl(MulticastSocket multicastSocket) {
-            mMulticastSocket = multicastSocket;
-        }
-
-        @Override
-        protected void bind(int port, InetAddress addr) throws SocketException {
-            mMulticastSocket.bind(InetSocketAddress.createUnresolved(addr.getHostAddress(), port));
-        }
-
-        @Override
-        protected void close() {
-            mMulticastSocket.close();
-        }
-
-        @Override
-        protected void create() throws SocketException {
-
-        }
-
-        @Override
-        protected byte getTTL() throws IOException {
-            return mMulticastSocket.getTTL();
-        }
-
-        @Override
-        protected int getTimeToLive() throws IOException {
-            return mMulticastSocket.getTimeToLive();
-        }
-
-        @Override
-        protected void join(InetAddress addr) throws IOException {
-            mMulticastSocket.joinGroup(addr);
-        }
-
-        @Override
-        protected void joinGroup(SocketAddress addr, NetworkInterface netInterface) throws IOException {
-            mMulticastSocket.joinGroup(addr, netInterface);
-        }
-
-        @Override
-        protected void leave(InetAddress addr) throws IOException {
-            mMulticastSocket.leaveGroup(addr);
-        }
-
-        @Override
-        protected void leaveGroup(SocketAddress addr, NetworkInterface netInterface) throws IOException {
-            mMulticastSocket.leaveGroup(addr, netInterface);
-        }
-
-        @Override
-        protected int peek(InetAddress sender) throws IOException {
-            return 0;
-        }
-
-        @Override
-        protected void receive(DatagramPacket pack) throws IOException {
-            mMulticastSocket.receive(pack);
-        }
-
-        @Override
-        protected void send(DatagramPacket pack) throws IOException {
-            mMulticastSocket.send(pack);
-        }
-
-        @Override
-        protected void setTimeToLive(int ttl) throws IOException {
-            mMulticastSocket.setTimeToLive(ttl);
-        }
-
-        @Override
-        protected void setTTL(byte ttl) throws IOException {
-            mMulticastSocket.setTTL(ttl);
-        }
-
-        @Override
-        protected int peekData(DatagramPacket pack) throws IOException {
-            return 0;
-        }
-
-        @Override
-        public Object getOption(int optID) throws SocketException {
-            return null;
-        }
-
-        @Override
-        public void setOption(int optID, Object val) throws SocketException {
-
-        }
     }
 
     public static String getIPAddress(boolean useIPv4) {

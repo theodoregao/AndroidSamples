@@ -26,7 +26,7 @@ import java.util.Random;
 public class SampleNioClient extends AppCompatActivity {
 
     private static final String TAG = SampleNioClient.class.getSimpleName();
-    private static String HOST = "172.17.4.173";
+    private static String HOST = "172.17.4.170";
     private static final int TCP_PORT = 52551;
     private static final int UDP_PORT = 52550;
 
@@ -81,23 +81,27 @@ public class SampleNioClient extends AppCompatActivity {
             new Thread() {
                 public void run() {
                     int j = 0;
-                    boolean running = true;
-                    while (running) {
-                        ByteBuffer buffer = ByteBuffer.wrap(getData());
+                    for (int i = 0; i < 10; i++) {
+                        ByteBuffer buffer = ByteBuffer.wrap(getData(i));
                         try {
                             socketChannel.write(buffer);
                         } catch (IOException e) {
                             // TODO Auto-generated catch block
                             e.printStackTrace();
-                            running = false;
                         }
                         buffer.clear();
                         try {
-                            Thread.sleep(random.nextInt(SLEEP_INTERVAL));
+                            Thread.sleep(random.nextInt(1000));
                         } catch (InterruptedException e) {
                             // TODO Auto-generated catch block
                             e.printStackTrace();
                         }
+                    }
+
+                    try {
+                        socketChannel.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
                 }
             }.start();
@@ -138,48 +142,58 @@ public class SampleNioClient extends AppCompatActivity {
         }
     }
 
-    private byte[] getData() {
+    private byte[] getData(int value) {
 
-
-        final String testEvent = "{\n" +
-                "    \"event_name\":\"(String - Event Name)\",\n" +
-                "    \"data\":\n" +
-                "     { \n" +
-                "        \"param1\":\"(String)\", \n" +
-                "        \"param2\":\"(String)\"\n" +
-                "     }\n" +
+        String testEvent = "{\n" +
+                "   \"data\":{\n" +
+                "      \"param1\":\"" + value % 2 + "\"\n" +
+                "   },\n" +
+                "   \"event_name\":\"core.exconnect.global_conn_enabled_change\"\n" +
                 "}";
 
+        String event2 = "{\n" +
+                "   \"data\":{\n" +
+                "      \"param1\":\"" + value * 1000 + "\"\n" +
+                "   },\n" +
+                "   \"event_name\":\"core.exconnect.total_coverage_remaining_change\"\n" +
+                "}";
 
-        final String invalidEvent = "{\n" +
-                "    \"event_name\":\"(String - Event Name)\",\n" +
-                "    \"data\":\n" +
-                "     { \n" +
-                "        \"param1\":\"(String)\", \n" +
-                "        \"param2\":\"(String)\"\n" +
-                "     }\n" +
-                "";
+        String event3 = "{\n" +
+                "   \"data\":{\n" +
+                "      \"param1\":\"" + 2 * value * 1000 + "\"\n" +
+                "   },\n" +
+                "   \"event_name\":\"core.exconnect.time_until_coverage_change_change\"\n" +
+                "}";
+
         int payloadSize = testEvent.getBytes().length;
         byte[] payloadSizeBytes = ByteBuffer.allocate(4).putInt(payloadSize).array();
-        byte[] invalidPayloadSizeBytes = ByteBuffer.allocate(4).putInt(invalidEvent.getBytes().length).array();
+        byte[] payloadsize2 = ByteBuffer.allocate(4).putInt(event2.getBytes().length).array();
+        byte[] payloadsize3 = ByteBuffer.allocate(4).putInt(event3.getBytes().length).array();
 
         try {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             bos.write(payloadSizeBytes[2]);
             bos.write(payloadSizeBytes[3]);
             bos.write(testEvent.getBytes());
-            bos.write(payloadSizeBytes[2]);
-            bos.write(payloadSizeBytes[3]);
-            bos.write(testEvent.getBytes());
-            bos.write(invalidPayloadSizeBytes[2]);
-            bos.write(invalidPayloadSizeBytes[3]);
-            bos.write(invalidEvent.getBytes());
-            bos.write(payloadSizeBytes[2]);
-            bos.write(payloadSizeBytes[3]);
-            bos.write(testEvent.getBytes());
-            bos.write(payloadSizeBytes[2]);
-            bos.write(payloadSizeBytes[3]);
-            bos.write(testEvent.getBytes());
+            bos.write(payloadsize2[2]);
+            bos.write(payloadsize2[3]);
+            bos.write(event2.getBytes());
+            bos.write(payloadsize3[2]);
+            bos.write(payloadsize3[3]);
+            bos.write(event3.getBytes());
+//            bos.write(payloadSizeBytes[2]);
+//            bos.write(payloadSizeBytes[3]);
+//            bos.write(testEvent.getBytes());
+//            bos.write(invalidPayloadSizeBytes[2]);
+//            bos.write(invalidPayloadSizeBytes[3]);
+//            bos.write(invalidEvent.getBytes());
+//            bos.write(payloadSizeBytes[2]);
+//            bos.write(payloadSizeBytes[3]);
+//            bos.write(testEvent.getBytes());
+//            bos.write(payloadSizeBytes[2]);
+//            bos.write(payloadSizeBytes[3]);
+//            bos.write(testEvent.getBytes());
+//            Log.v(TAG, new String(bos.toByteArray()));
             return bos.toByteArray();
         } catch (IOException e) {
             e.printStackTrace();

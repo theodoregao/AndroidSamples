@@ -90,13 +90,15 @@ public class Subscriber extends Thread implements Runnable {
 
 		while (true) {
 			String channel = mulServiceSubscriber.recvStr();
-			Log.v(TAG, "channel: " + channel);
-			String content = mulServiceSubscriber.recvStr();
-			Log.v(TAG, "content: " + content);
-			if (handler != null) {
-				Message msg = handler.obtainMessage();
-				msg.obj = new JeroMessage(channel, content);
-				handler.sendMessage(msg);
+			Log.v(TAG, mulServiceSubscriber.hasReceiveMore() + " channel: " + channel);
+			while (mulServiceSubscriber.hasReceiveMore()) {
+				String content = mulServiceSubscriber.recvStr();
+				Log.v(TAG, mulServiceSubscriber.hasReceiveMore() + " content: " + content);
+				if (handler != null) {
+					Message msg = handler.obtainMessage();
+					msg.obj = new JeroMessage(channel, content);
+					handler.sendMessage(msg);
+				}
 			}
 		}
 	}

@@ -60,7 +60,7 @@ public class Publisher extends Thread implements Runnable {
 				Log.v(TAG, "sendMore() " + message.getChannel().toString());
 				publisher.sendMore(message.getChannel());
 				Log.v(TAG, "send() " + message.getMessage());
-				publisher.send(message.getMessage().getBytes(), 0);
+				publisher.send(message.getMessage().getBytes());
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

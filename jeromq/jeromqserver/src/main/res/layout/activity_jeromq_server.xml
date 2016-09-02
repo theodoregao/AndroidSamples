@@ -58,7 +58,7 @@
             android:layout_height="wrap_content" />
 
         <EditText
-            android:id="@+id/message"
+            android:id="@+id/mMessage"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_width="0dp"

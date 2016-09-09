@@ -20,7 +20,6 @@ import inflight.InFlightMessageSource;
 import jeromq.Channel;
 
 public class MainActivity extends AppCompatActivity {
-    private static final int port = 6000;
 
     private MessageHandler messageHandler;
     private LogAdapter mLogs;
@@ -113,21 +112,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void subscribe(final String ip) {
-        new Thread() {
-            @Override
-            public void run() {
-                mInFlightMessageSource.subscribe(new Channel(ip));
-            }
-        }.start();
+        mInFlightMessageSource.connect(ip);
+        mInFlightMessageSource.subscribe(new Channel(ip));
     }
 
     public void unsubscribe(final String ip) {
-        new Thread() {
-            @Override
-            public void run() {
-                mInFlightMessageSource.unSubscribe(new Channel(ip));
-            }
-        }.start();
+        mInFlightMessageSource.unSubscribe(new Channel(ip));
     }
 
     public void send(String msg) {

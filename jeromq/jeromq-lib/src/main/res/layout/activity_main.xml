@@ -16,7 +16,7 @@
             android:id="@+id/ip1"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:text="172.31.241.11"
+            android:text="172.17.4.247"
             android:layout_height="wrap_content" />
 
         <LinearLayout
@@ -51,7 +51,7 @@
             android:id="@+id/ip2"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:text="172.31.240.242"
+            android:text="172.17.4.138"
             android:layout_height="wrap_content" />
 
         <LinearLayout

@@ -1,5 +1,7 @@
 package inflight;
 
+import android.util.Log;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -21,6 +23,8 @@ import jeromq.Subscriber;
 
 public class InFlightMessageSource implements Subscriber.OnJeroMessageReceiveListener {
 
+    private static final String TAG = InFlightMessageSource.class.getSimpleName();
+
     private static final int THREAD_POOL_SIZE = 3;
     private static final int INTERNAL_THREAD_SIZE = 3;
     private static final int INCOMING_QUEUE_SIZE = 1024;
@@ -31,6 +35,7 @@ public class InFlightMessageSource implements Subscriber.OnJeroMessageReceiveLis
     private Publisher mPublisher;
     private Map<String, Subscriber> mSubscribers;
     private ExecutorService mExecutorService;
+    private ExecutorService mExecutorServiceSubscribers;
     private BlockingQueue<JeroMessage> mIncomingMessage;
     private BlockingQueue<Command> mCommands;
 
@@ -48,16 +53,16 @@ public class InFlightMessageSource implements Subscriber.OnJeroMessageReceiveLis
     }
 
     public InFlightMessageSource(String ip) {
-        mExecutorService = Executors.newFixedThreadPool(INTERNAL_THREAD_SIZE + THREAD_POOL_SIZE);
-        mPublisher = new Publisher(ip, PORT);
+        mExecutorService = Executors.newFixedThreadPool(INTERNAL_THREAD_SIZE);
+        mExecutorServiceSubscribers = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
         mSubscribers = new HashMap<>();
         mIncomingMessage = new ArrayBlockingQueue<>(INCOMING_QUEUE_SIZE);
         mCommands = new ArrayBlockingQueue<>(COMMAND_QUEUE_SIZE);
 
         mRunning = true;
         mExecutorService.execute(mMessageHandler);
-        mExecutorService.execute(mPublisher);
         mExecutorService.execute(mCommander);
+        postCommand(newStartPublisher(ip));
     }
 
     public void connect(String ip) {
@@ -66,20 +71,20 @@ public class InFlightMessageSource implements Subscriber.OnJeroMessageReceiveLis
                 if (mInFlightSourceListener != null) mInFlightSourceListener.onInFlightSourceError(InFlightMessageSourceError.ERROR_SUBSCRIBER_SIZE_LIMIT);
                 return;
             }
-            mCommands.add(newConnectCommand(ip));
+            postCommand(newConnectCommand(ip));
         }
     }
 
     public void subscribe(Channel channel) {
-        mCommands.add(newSubscribeCommand(channel));
+        postCommand(newSubscribeCommand(channel));
     }
 
     public void unSubscribe(Channel channel) {
-        mCommands.add(newUnsubscribeCommand(channel));
+        postCommand(newUnsubscribeCommand(channel));
     }
 
     public void stop() {
-        mCommands.add(newStopCommand());
+        postCommand(newStopCommand());
     }
 
     @Override
@@ -91,7 +96,7 @@ public class InFlightMessageSource implements Subscriber.OnJeroMessageReceiveLis
         if (inFlightMessage == null) {
             if (mInFlightSourceListener != null) mInFlightSourceListener.onInFlightSourceError(InFlightMessageSourceError.ERROR_PUBLISHING_INVALID_MESSAGE);
         }
-        else mPublisher.publishMessage(channel, inFlightMessage.toJson());
+        else if (mPublisher != null) mPublisher.publishMessage(channel, inFlightMessage.toJson());
     }
 
     private Runnable mMessageHandler = new Runnable() {
@@ -120,6 +125,7 @@ public class InFlightMessageSource implements Subscriber.OnJeroMessageReceiveLis
                     if (mInFlightSourceListener != null) mInFlightSourceListener.onInFlightSourceError(InFlightMessageSourceError.ERROR_PAYLOAD_JSON_FORMAT);
                 }
             }
+            Log.v(TAG, "~mMessageHandler.run()");
         }
     };
 
@@ -164,7 +170,7 @@ public class InFlightMessageSource implements Subscriber.OnJeroMessageReceiveLis
     }
 
     private enum CommandType {
-        CONNECT, STOP, SUBSCRIBE, UNSUBSCRIBE
+        START_PUBLISHER, CONNECT, STOP, SUBSCRIBE, UNSUBSCRIBE
     }
 
     private class Command {
@@ -181,7 +187,7 @@ public class InFlightMessageSource implements Subscriber.OnJeroMessageReceiveLis
                     Command command = mCommands.take();
                     switch (command.commandType) {
                         case STOP:
-                            mRunning = false;
+                            doStop();
                             break;
 
                         case CONNECT:
@@ -196,6 +202,10 @@ public class InFlightMessageSource implements Subscriber.OnJeroMessageReceiveLis
                             doUnsubscribe(command.channel);
                             break;
 
+                        case START_PUBLISHER:
+                            doStartPublisher(command.ip);
+                            break;
+
                         default:
                             break;
 
@@ -207,10 +217,36 @@ public class InFlightMessageSource implements Subscriber.OnJeroMessageReceiveLis
         }
     };
 
+    private void doStop() {
+        mRunning = false;
+
+        mPublisher.interrupt();
+        mPublisher.stopPublisher();
+        mPublisher = null;
+
+        mCommands.clear();
+        mCommands = null;
+
+        mIncomingMessage.clear();
+        mIncomingMessage = null;
+
+        for (Subscriber subscriber: mSubscribers.values()) subscriber.stopSubscriber();
+        mSubscribers.clear();
+        mSubscribers = null;
+
+        mExecutorServiceSubscribers.shutdown();
+        mExecutorServiceSubscribers = null;
+
+        mExecutorService.shutdown();
+        mExecutorService = null;
+
+        Log.v(TAG, "after doStop()");
+    }
+
     private void doConnect(String ip) {
         Subscriber subscriber = new Subscriber(ip, PORT);
         subscriber.setOnJeroMessageReceiveListener(this);
-        mExecutorService.execute(subscriber);
+        mExecutorServiceSubscribers.execute(subscriber);
         mSubscribers.put(ip, subscriber);
     }
 
@@ -220,6 +256,16 @@ public class InFlightMessageSource implements Subscriber.OnJeroMessageReceiveLis
 
     private void doUnsubscribe(Channel channel) {
         for (Subscriber subscriber: mSubscribers.values()) subscriber.unsubscribe(channel);
+    }
+
+    private void doStartPublisher(String ip) {
+        mPublisher = new Publisher(ip, PORT);
+        mPublisher.startPublisher();
+        mExecutorService.execute(mPublisher);
+    }
+
+    private void postCommand(Command command) {
+        mCommands.add(command);
     }
 
     private Command newConnectCommand(String ip) {
@@ -246,6 +292,13 @@ public class InFlightMessageSource implements Subscriber.OnJeroMessageReceiveLis
         Command command = new Command();
         command.commandType = CommandType.UNSUBSCRIBE;
         command.channel = channel;
+        return command;
+    }
+
+    private Command newStartPublisher(String ip) {
+        Command command = new Command();
+        command.commandType = CommandType.START_PUBLISHER;
+        command.ip = ip;
         return command;
     }
 

@@ -1,18 +1,22 @@
 package jeromq;
 
 import org.zeromq.ZMQ;
+import org.zeromq.ZMQException;
 
 import java.util.HashSet;
 import java.util.Set;
 
+import zmq.ZError;
+
 public class Subscriber extends Thread implements Runnable {
 
-	private boolean mRunning;
+	private volatile boolean mRunning;
 	private String mPublisherIp;
 	private int mPort;
 	private ZMQ.Socket mSubscriber;
 	private Set<Channel> mSubscribedChannels;
 	private OnJeroMessageReceiveListener mOnJeroMessageReceiveListener;
+	private ZMQ.Context mContext;
 
 	public Subscriber(String mPublisherIp, int port) {
 		this.mPublisherIp = mPublisherIp;
@@ -36,13 +40,23 @@ public class Subscriber extends Thread implements Runnable {
 		}
 	}
 
+	public void stopSubscriber() {
+		mRunning = false;
+		mSubscriber.disconnect(Util.formUrl(mPublisherIp, mPort));
+		mSubscriber.close();
+		mSubscriber = null;
+		mContext.term();
+		mContext = null;
+		mSubscribedChannels.clear();
+	}
+
 	@Override
 	public void run() {
 
 		super.run();
 
-		ZMQ.Context ctx = ZMQ.context(1);
-		mSubscriber = ctx.socket(ZMQ.SUB);
+		mContext = ZMQ.context(1);
+		mSubscriber = mContext.socket(ZMQ.SUB);
 
 //		mSubscriber.monitor("inproc://monitor.socket", ZMQ.EVENT_ALL);
 //		final ZMQ.Socket monitor = ctx.socket(ZMQ.PAIR);
@@ -59,6 +73,7 @@ public class Subscriber extends Thread implements Runnable {
 //			}
 //		}.start();
 
+		mSubscriber.setReceiveTimeOut(1000);
 		mSubscriber.connect(Util.formUrl(mPublisherIp, mPort));
 
 		if (!mSubscribedChannels.isEmpty()) {
@@ -67,19 +82,22 @@ public class Subscriber extends Thread implements Runnable {
 
 		mRunning = true;
 		while (mRunning) {
-			Channel channel = new Channel(mSubscriber.recvStr());
-			while (mSubscriber.hasReceiveMore()) {
-				String content = mSubscriber.recvStr();
-				if (mOnJeroMessageReceiveListener != null) mOnJeroMessageReceiveListener.onJeroMessageReceived(new JeroMessage(channel, content));
+			try {
+				byte[] bytes = mSubscriber.recv();
+				if (bytes != null) {
+					Channel channel = new Channel(new String(bytes));
+					while (mSubscriber.hasReceiveMore()) {
+						String content = mSubscriber.recvStr();
+						if (mOnJeroMessageReceiveListener != null)
+							mOnJeroMessageReceiveListener.onJeroMessageReceived(new JeroMessage(channel, content));
+					}
+				}
+			} catch (ZError.IOException e) {
+				e.printStackTrace();
+			} catch (ZMQException e) {
+				e.printStackTrace();
 			}
 		}
-
-		mSubscriber.close();
-		ctx.term();
-	}
-
-	public void terminate() {
-		mRunning = false;
 	}
 
 	public interface OnJeroMessageReceiveListener {

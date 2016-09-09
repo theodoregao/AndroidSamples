@@ -1,7 +1,5 @@
 package jeromq;
 
-import android.util.Log;
-
 import org.zeromq.ZMQ;
 
 import java.util.concurrent.ArrayBlockingQueue;
@@ -11,33 +9,45 @@ public class Publisher extends Thread implements Runnable {
 
 	private static final String TAG = Publisher.class.getSimpleName();
 
-	private boolean mRunning;
 	private String mPublisherIp;
 	private int mPort;
+	private volatile boolean mRunning;
 	private BlockingQueue<JeroMessage> mOutGoingMessages;
+	private ZMQ.Context mContext;
+	private ZMQ.Socket mPublisher;
 
 	public Publisher(String mPublisherIp, int port) {
 		this.mPublisherIp = mPublisherIp;
 		this.mPort = port;
 		mOutGoingMessages = new ArrayBlockingQueue<>(1024);
+
+	}
+
+	public void startPublisher() {
+		mContext = ZMQ.context(1);
+		mPublisher = mContext.socket(ZMQ.PUB);
+		mPublisher.bind(Util.formUrl(mPublisherIp, mPort));
+	}
+
+	public void stopPublisher() {
+		mRunning = false;
+		interrupt();
+		mOutGoingMessages.clear();
+		mPublisher.disconnect(Util.formUrl(mPublisherIp, mPort));
+		mPublisher.unbind(Util.formUrl(mPublisherIp, mPort));
+		mPublisher.close();
+		mPublisher = null;
+		mContext.term();
+		mPublisher = null;
 	}
 
 	public void publishMessage(Channel channel, String message) {
 		mOutGoingMessages.add(new JeroMessage(channel, message));
 	}
 
-	public void terminate() {
-		mRunning = false;
-	}
-
 	@Override
 	public void run() {
 		super.run();
-
-		ZMQ.Context ctx = ZMQ.context(1);
-		ZMQ.Socket publisher = ctx.socket(ZMQ.PUB);
-
-		publisher.bind(Util.formUrl(mPublisherIp, mPort));
 
 //		final ZMQ.Socket monitor = ctx.socket(ZMQ.PAIR);
 //		monitor.subscribe("inproc://monitor.socket");
@@ -52,22 +62,19 @@ public class Publisher extends Thread implements Runnable {
 //		}.start();
 
 		mRunning = true;
-
 		while (mRunning) {
 			try {
 				JeroMessage message = mOutGoingMessages.take();
+				if (message != null) {
 //				Log.v(TAG, "sendMore() " + message.getChannel().getChannelName());
-				publisher.sendMore(message.getChannel().getChannelName());
+					mPublisher.sendMore(message.getChannel().getChannelName());
 //				Log.v(TAG, "send() " + message.getMessage());
-				publisher.send(message.getMessage().getBytes());
+					mPublisher.send(message.getMessage().getBytes());
+				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
-
-		mOutGoingMessages.clear();
-		publisher.close();
-		ctx.term();
 	}
 
 }

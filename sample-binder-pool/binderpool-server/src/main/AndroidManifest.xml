@@ -11,7 +11,11 @@
         <service
             android:name=".BinderPoolService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true">
+            <intent-filter>
+                <action android:name="sg.shun.gao.ACTION_BINDER_POOL" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

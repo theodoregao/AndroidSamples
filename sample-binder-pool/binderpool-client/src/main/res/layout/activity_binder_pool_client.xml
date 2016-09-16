@@ -1,17 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:id="@+id/activity_binder_pool_client" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="metadata.test.panasonic.aero.binderpoolclient.sg.shun.gao.binderpool.client.BinderPoolClient">
+    tools:context=".BinderPoolClient">
 
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="@+id/activity_binder_pool_client"
-        app:layout_constraintLeft_toLeftOf="@+id/activity_binder_pool_client"
-        app:layout_constraintRight_toRightOf="@+id/activity_binder_pool_client"
-        app:layout_constraintTop_toTopOf="@+id/activity_binder_pool_client" />
+    <Button
+        android:id="@+id/action_encrypt"
+        android:text="encrypt"
+        android:onClick="onClick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
-</android.support.constraint.ConstraintLayout>
+    <Button
+        android:id="@+id/action_compute"
+        android:text="compute"
+        android:onClick="onClick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

@@ -12,7 +12,7 @@ import sg.shun.gao.aidl.IBinderPool;
 public class BinderPoolImpl extends IBinderPool.Stub {
 
     private static final int BINDER_SECURITY_CENTER = 0;
-    private static final int BINDER_COMPUTE = 2;
+    private static final int BINDER_COMPUTE = 1;
 
     @Override
     public IBinder queryBinder(int binderCode) throws RemoteException {

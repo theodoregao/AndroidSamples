@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="metadata.test.panasonic.aero.binderpoolserver">
+    package="sg.shun.gao.binderpool.server">
 
     <application
         android:allowBackup="true"
@@ -9,7 +9,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <service
-            android:name="sg.shun.gao.binderpool.server.BinderPoolService"
+            android:name=".BinderPoolService"
             android:enabled="true"
             android:exported="true"></service>
     </application>

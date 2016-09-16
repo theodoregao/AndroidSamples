@@ -5,7 +5,7 @@ android {
     buildToolsVersion "24.0.0"
 
     defaultConfig {
-        applicationId "metadata.test.panasonic.aero.binderpoolclient"
+        applicationId "sg.shun.gao.binderpool.client"
         minSdkVersion 15
         targetSdkVersion 24
         versionCode 1
@@ -17,6 +17,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    lintOptions {
+        abortOnError false
+    }
+
 }
 
 dependencies {

@@ -1,4 +1,4 @@
-package metadata.test.panasonic.aero.binderpoolclient;
+package sg.shun.gao.binderpool.client;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

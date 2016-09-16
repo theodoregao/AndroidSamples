@@ -43,4 +43,6 @@ include ':common-android-library'
 //include ':sample-nio:sample-nio-server', ':sample-nio:sample-nio-client'
 
 //include ':jeromq:jeromqserver', ':jeromq:jeromq-demo', ':jeromq:jeromq-lib'
-include ':jeromq:jeromq-lib'
+//include ':jeromq:jeromq-lib'
+
+include 'sample-binder-pool:binderpool-server', 'sample-binder-pool:binderpool-client'

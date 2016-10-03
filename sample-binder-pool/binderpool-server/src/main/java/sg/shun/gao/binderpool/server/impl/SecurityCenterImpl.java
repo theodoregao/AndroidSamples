@@ -11,6 +11,7 @@ import sg.shun.gao.aidl.ISecurityCenter;
 public class SecurityCenterImpl extends ISecurityCenter.Stub {
     @Override
     public String encrypt(String content) throws RemoteException {
+        // add method permission & security check here
         return "--" + content + "--";
     }
 

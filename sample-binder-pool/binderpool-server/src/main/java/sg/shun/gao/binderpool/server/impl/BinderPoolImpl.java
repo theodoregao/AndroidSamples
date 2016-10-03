@@ -16,6 +16,7 @@ public class BinderPoolImpl extends IBinderPool.Stub {
 
     @Override
     public IBinder queryBinder(int binderCode) throws RemoteException {
+        // add module permission & security check here
         IBinder binder = null;
         switch (binderCode) {
             case BINDER_SECURITY_CENTER:

@@ -45,4 +45,9 @@ include ':common-android-library'
 //include ':jeromq:jeromqserver', ':jeromq:jeromq-demo', ':jeromq:jeromq-lib'
 //include ':jeromq:jeromq-lib'
 
-include 'sample-binder-pool:binderpool-server', 'sample-binder-pool:binderpool-client'
+//include 'sample-binder-pool:binderpool-server', 'sample-binder-pool:binderpool-client'
+
+//include ':sample-java-permission'
+//include ':androidPopup'
+
+include ':sample-lifecycle'

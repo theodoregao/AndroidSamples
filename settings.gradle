@@ -50,4 +50,4 @@ include ':common-android-library'
 //include ':sample-java-permission'
 //include ':androidPopup'
 
-include ':sample-lifecycle'
+include ':sample-ipc:sample-aidl-server', ':sample-ipc:sample-aidl-client', ':sample-ipc:sample-tcp-server', ':sample-ipc:sample-tcp-client'

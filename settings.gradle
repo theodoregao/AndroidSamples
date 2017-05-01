@@ -1,4 +1,4 @@
-include ':common-android-library'
+include ':common-android-library', ':jnicallback'
 
 //include ':sample-android'
 
@@ -43,11 +43,10 @@ include ':common-android-library'
 //include ':sample-nio:sample-nio-server', ':sample-nio:sample-nio-client'
 
 //include ':jeromq:jeromqserver', ':jeromq:jeromq-demo', ':jeromq:jeromq-lib'
-//include ':jeromq:jeromq-lib'
 
 //include 'sample-binder-pool:binderpool-server', 'sample-binder-pool:binderpool-client'
 
 //include ':sample-java-permission'
 //include ':androidPopup'
 
-include ':sample-ipc:sample-aidl-server', ':sample-ipc:sample-aidl-client', ':sample-ipc:sample-tcp-server', ':sample-ipc:sample-tcp-client'
+//include ':sample-ipc:sample-aidl-server', ':sample-ipc:sample-aidl-client', ':sample-ipc:sample-tcp-server', ':sample-ipc:sample-tcp-client'

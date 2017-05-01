@@ -39,7 +39,7 @@ public class SampleAidl extends AppCompatActivity {
                     StringBuilder data = new StringBuilder();
                     int length = 1024 * 128;
                     for (int i = 0; i < length; i++) data.append('a');
-                    int count = 8 * 1024;
+                    int count = 8 * 1024 * 100;
                     for (int i = 0; i < count; i++)
                         try {
                             api.sendReceiveData(data.toString());

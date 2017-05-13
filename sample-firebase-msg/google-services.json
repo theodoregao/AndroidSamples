@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "169588615819",
+    "firebase_url": "https://opentable-29b1a.firebaseio.com",
+    "project_id": "opentable-29b1a",
+    "storage_bucket": "opentable-29b1a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:169588615819:android:66b541f9fa88e748",
+        "android_client_info": {
+          "package_name": "docscan.gao.shun.sg.fmp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "169588615819-pbe9nd8at0tkaj3tfa64nql8m7rgnoe0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "docscan.gao.shun.sg.fmp",
+            "certificate_hash": "f6182fbf5422236367384bff4d65a718ff71abb4"
+          }
+        },
+        {
+          "client_id": "169588615819-e7j3km82kqsa8upm1kim7l29iit93a65.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAl3Ldh4oxf-cUIFFKcArdF0jALPMBsmIc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "169588615819-e7j3km82kqsa8upm1kim7l29iit93a65.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

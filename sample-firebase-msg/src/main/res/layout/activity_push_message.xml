@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="docscan.gao.shun.sg.fmp.PushMessage">
+
+    <TextView
+        android:id="@+id/text"
+        android:text="wait for instance id"
+        android:textSize="32sp"
+        android:layout_marginBottom="24dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/instance_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:ems="10"
+        android:hint="waiting for my instance id"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/remote_instance_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:ems="10"
+        android:hint="send to instance id"
+        android:text="cWG3X1bEgl4:APA91bHxaLpKJY59fUC-8VndTflIhd-We7JTV7R5tTuxx_ffJHeD4fQGj93AGDMxyW4n5lJnqVTaAjHq6AZmd6bg835M8qHUv9m9xFdqMDySQbcECjtKanS3KFH863AfvP092u8DXmac"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:ems="10"
+        android:hint="message"
+        android:text="simple message"
+        android:inputType="textPersonName" />
+
+    <Button
+        android:text="send"
+        android:onClick="onClick"
+        android:id="@+id/action_send_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</LinearLayout>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_media_player"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:orientation="vertical"
+    tools:context="aero.panasonic.test.mediaplayer.MediaPlayerActivity">
+
+    <TextView
+        android:id="@+id/log"
+        android:textSize="16sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:textSize="24sp"
+            android:id="@+id/load"
+            android:text="LOAD"
+            android:gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:layout_marginLeft="16dp"
+            android:id="@+id/url"
+            android:textSize="20sp"
+            android:textColor="#666666"
+            android:hint="http://www.sample-videos.com/video/mp4/720/big_buck_bunny_720p_1mb.mp4"
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <SurfaceView android:id="@+id/surface"
+        android:background="#AAAAAA"
+        android:layout_margin="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_gravity="center">
+    </SurfaceView>
+
+</LinearLayout>

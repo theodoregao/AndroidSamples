@@ -28,6 +28,8 @@ import javax.net.ssl.SSLSocket;
 
 public class SslServerSocket {
 
+    private static final String TAG = SslServerSocket.class.getSimpleName();
+
     private static final int PORT = 1986;
 
     private Context context;
@@ -44,69 +46,67 @@ public class SslServerSocket {
         new Thread() {
             @Override
             public void run() {
-                init();
+                try {
+                    init();
+                } catch (KeyStoreException e) {
+                    e.printStackTrace();
+                } catch (CertificateException e) {
+                    e.printStackTrace();
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (UnrecoverableKeyException e) {
+                    e.printStackTrace();
+                } catch (KeyManagementException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }.start();
     }
 
-    private void init() {
+    private void init() throws KeyStoreException, CertificateException, NoSuchAlgorithmException, IOException, UnrecoverableKeyException, KeyManagementException, InterruptedException {
         String password = "user123";
         SSLServerSocket sslServerSocket = null;
 
-        try {
-            KeyStore keyStore = KeyStore.getInstance("PKCS12");
-            keyStore.load(context.getResources().openRawResource(R.raw.p12), password.toCharArray());
-            KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-            keyManagerFactory.init(keyStore, password.toCharArray());
-            SSLContext sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(keyManagerFactory.getKeyManagers(), null, null);
-            ServerSocketFactory serverSocketFactory = sslContext.getServerSocketFactory();
-            sslServerSocket = (SSLServerSocket) serverSocketFactory.createServerSocket(PORT);
-            Log.v(SslServer.TAG, "server socket start");
+        KeyStore keyStore = KeyStore.getInstance("PKCS12");
+        keyStore.load(context.getResources().openRawResource(R.raw.p12), password.toCharArray());
+        KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+        keyManagerFactory.init(keyStore, password.toCharArray());
+        SSLContext sslContext = SSLContext.getInstance("TLS");
+        sslContext.init(keyManagerFactory.getKeyManagers(), null, null);
+        ServerSocketFactory serverSocketFactory = sslContext.getServerSocketFactory();
+        sslServerSocket = (SSLServerSocket) serverSocketFactory.createServerSocket(PORT);
+        Log.v(TAG, "server socket start");
 
-            while (running) {
-                SSLSocket client = (SSLSocket) sslServerSocket.accept();
-                Log.v(SslServer.TAG, "new client connected");
-                BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-                BufferedWriter out = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
-                String message;
-                while (true) {
-                    int d = in.read();
-                    Log.v(SslServer.TAG, "read: " + d);
-//                    out.write("hello from server");
-//                    out.flush();
-//                    message = in.readLine();
-//                    if (message != null && message.length() > 0) {
-//                        Log.v(SslServer.TAG, "Client's message: " + message);
-//                        Log.v(SslServer.TAG, "Responding same message: " + message);
-//                        out.write(message);
-//                        out.flush();
-//                        out.close();
-//                        in.close();
-//                        client.close();
-//                    } else {
-//                        Log.v(SslServer.TAG, "got : " + message);
-//                    }
-                }
-            }
+        while (running) {
+            SSLSocket client = (SSLSocket) sslServerSocket.accept();
+            Log.v(TAG, "new client connected");
+            if (callback != null) callback.onClientConnected(client);
+            BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
 
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
-        } catch (CertificateException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (UnrecoverableKeyException e) {
-            e.printStackTrace();
-        } catch (KeyManagementException e) {
-            e.printStackTrace();
+            Thread.sleep(1000);
+            Log.v(TAG, "reading");
+            String message = in.readLine();
+            Log.v(TAG, "read: " + message);
+
+            if (callback != null) callback.onMessageReceived(message);
+            Log.v(TAG, "writing");
+            out.write("message from server");
+            out.flush();
+            Log.v(TAG, "write done");
+
+            in.close();
+            out.close();
         }
 
     }
 
-    public static interface SslServerSocketCallback {
+    public interface SslServerSocketCallback {
         void onClientConnected(SSLSocket client);
+        void onMessageReceived(String message);
     }
 }

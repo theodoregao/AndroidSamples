@@ -85,22 +85,34 @@ public class SslServerSocket {
             SSLSocket client = (SSLSocket) sslServerSocket.accept();
             Log.v(TAG, "new client connected");
             if (callback != null) callback.onClientConnected(client);
-            BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+            final BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
 
-            Thread.sleep(1000);
-            Log.v(TAG, "reading");
-            String message = in.readLine();
-            Log.v(TAG, "read: " + message);
+            new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        while (running) {
+                            Log.v(TAG, "reading");
+                            String message = null;
+                            message = in.readLine();
+                            Log.v(TAG, "read: " + message);
+                            if (callback != null) callback.onMessageReceived(message);
+                        }
+                        in.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }.start();
 
-            if (callback != null) callback.onMessageReceived(message);
             Log.v(TAG, "writing");
-            out.write("message from server");
+            out.write("message from server\n");
             out.flush();
             Log.v(TAG, "write done");
 
-            in.close();
             out.close();
+            running = false;
         }
 
     }

@@ -5,14 +5,9 @@ import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -21,12 +16,8 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManagerFactory;
 
 /**
@@ -89,20 +80,33 @@ public class SslClientSocket {
         sslContext.init(null, trustManagerFactory.getTrustManagers(), null);
 
         SSLSocket sslSocket = (SSLSocket) sslContext.getSocketFactory().createSocket(ip, PORT);
-        BufferedReader in = new BufferedReader(new InputStreamReader(sslSocket.getInputStream()));
-        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(sslSocket.getOutputStream()));
+        final BufferedReader in = new BufferedReader(new InputStreamReader(sslSocket.getInputStream()));
+        final BufferedWriter out = new BufferedWriter(new OutputStreamWriter(sslSocket.getOutputStream()));
+
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    while (running) {
+                        Log.v(TAG, "reading");
+                        String message = null;
+                        message = in.readLine();
+                        if (callback != null) callback.onMessageReceived(message);
+                        in.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
 
         Log.v(TAG, "writing");
-        out.write("message from client");
+        out.write("message from client\n");
         out.flush();
         Log.v(TAG, "write done");
 
-        Log.v(TAG, "reading");
-        String message = in.readLine();
-        if (callback != null) callback.onMessageReceived(message);
-
-        in.close();
         out.close();
+        running = false;
     }
 
     public interface SslClientSocketCallback {

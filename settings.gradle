@@ -50,6 +50,6 @@ include ':common-android-library'
 //include ':androidPopup'
 
 //include ':sample-ipc:sample-aidl-server', ':sample-ipc:sample-aidl-client', ':sample-ipc:sample-tcp-server', ':sample-ipc:sample-tcp-client'
-include ':sample-ipc:ssltcpserver'
+include ':sample-ipc:ssltcpserver', ':sample-ipc:ssltcpclient'
 
 //include ':sample-media-player'

@@ -1,4 +1,4 @@
-include ':common-android-library'
+//include ':common-android-library'
 
 //include ':sample-android'
 
@@ -50,6 +50,8 @@ include ':common-android-library'
 //include ':androidPopup'
 
 //include ':sample-ipc:sample-aidl-server', ':sample-ipc:sample-aidl-client', ':sample-ipc:sample-tcp-server', ':sample-ipc:sample-tcp-client'
-include ':sample-ipc:ssltcpserver', ':sample-ipc:ssltcpclient'
+//include ':sample-ipc:ssltcpserver', ':sample-ipc:ssltcpclient'
 
 //include ':sample-media-player'
+
+include ':sample-mobile-vision:barcode', ':sample-mobile-vision:facedetection', ':sample-mobile-vision:ocr'

@@ -112,7 +112,7 @@ public class SslServerSocket {
             Log.v(TAG, "write done");
 
             out.close();
-            running = false;
+//            running = false;
         }
 
     }

@@ -87,7 +87,7 @@ public class SampleTcp extends AppCompatActivity {
                 for (int i = 0; i < 1024 * 1024; i++) stringBuilder.append('a');
                 String data = stringBuilder.toString();
 
-                int count = 1024;
+                int count = 1024 * 2;
 
                 for (int i = 0; i < count; i++) {
                     output.write(data);

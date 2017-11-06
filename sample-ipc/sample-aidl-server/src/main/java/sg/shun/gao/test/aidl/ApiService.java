@@ -2,11 +2,22 @@ package sg.shun.gao.test.aidl;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.os.RemoteException;
 
 public class ApiService extends Service {
+
+    private Handler handler;
+
     public ApiService() {
+        handler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+            }
+        };
     }
 
     @Override
@@ -17,8 +28,9 @@ public class ApiService extends Service {
     private IBinder binder = new Api.Stub() {
 
         @Override
-        public String sendReceiveData(String data) throws RemoteException {
-            return data;
+        public void sendReceiveData(String data) throws RemoteException {
+            handler.sendMessage(new Message());
+//            return "";
         }
     };
 }

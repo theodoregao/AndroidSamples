@@ -53,6 +53,13 @@
 //include ':sample-ipc:ssltcpserver', ':sample-ipc:ssltcpclient'
 
 //include ':sample-media-player'
+//include ':sample-exoplayer:classicalmusicquiz'
+//
+//include ':sample-mobile-vision:barcode', ':sample-mobile-vision:facedetection', ':sample-mobile-vision:ocr', ':sample-mobile-vision:emojify'
+//
+//include ':sample-fragment:androidme'
+//
+//include ':sample-google-play-service:firebase-message', ':sample-google-play-service:location:place-aware'
 
 //include ':sample-mobile-vision:barcode', ':sample-mobile-vision:facedetection', ':sample-mobile-vision:ocr'
 

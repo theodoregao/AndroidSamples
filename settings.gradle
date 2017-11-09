@@ -54,4 +54,6 @@
 
 //include ':sample-media-player'
 
-include ':sample-mobile-vision:barcode', ':sample-mobile-vision:facedetection', ':sample-mobile-vision:ocr'
+//include ':sample-mobile-vision:barcode', ':sample-mobile-vision:facedetection', ':sample-mobile-vision:ocr'
+
+include ':sample-javascript-bridge'

@@ -63,4 +63,6 @@
 
 //include ':sample-mobile-vision:barcode', ':sample-mobile-vision:facedetection', ':sample-mobile-vision:ocr'
 
-include ':sample-javascript-bridge'
+//include ':sample-javascript-bridge'
+
+include ':sample-ad-mob'

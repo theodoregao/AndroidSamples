@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
+    android:layout_gravity="center_horizontal"
+    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" tools:context="gao.shun.sg.sampleadmob.AdActivity">
+
+    <Button
+        android:text="Banner"
+        android:layout_margin="16dp"
+        android:onClick="onBannerClicked"
+        android:layout_width="match_parent"
+        android:layout_height="64dp" />
+
+    <Button
+        android:text="Interstitial"
+        android:layout_margin="16dp"
+        android:onClick="onInterstitialClicked"
+        android:layout_width="match_parent"
+        android:layout_height="64dp" />
+
+</LinearLayout>

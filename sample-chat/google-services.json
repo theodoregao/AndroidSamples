@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "580696449339",
+    "firebase_url": "https://sample-chat-shun-gao.firebaseio.com",
+    "project_id": "sample-chat-shun-gao",
+    "storage_bucket": "sample-chat-shun-gao.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:580696449339:android:92634d8e79ec4566",
+        "android_client_info": {
+          "package_name": "gao.shun.sg.sample.chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "580696449339-rrb9p81oqcg27ocksjan6c594sq291rf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "gao.shun.sg.sample.chat",
+            "certificate_hash": "f6182fbf5422236367384bff4d65a718ff71abb4"
+          }
+        },
+        {
+          "client_id": "580696449339-ci1de94r8bc4ogo0hnsiq4fcslbhnhn8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDx4_zbU1UmkpRsVurhVT3uySyxeNaXExw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "580696449339-ci1de94r8bc4ogo0hnsiq4fcslbhnhn8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -65,4 +65,6 @@
 
 //include ':sample-javascript-bridge'
 
-include ':sample-ad-mob'
+//include ':sample-ad-mob'
+
+include ':sample-chat'

@@ -67,4 +67,8 @@
 
 //include ':sample-ad-mob'
 
-include ':sample-chat'
+//include ':sample-chat'
+
+//include ':sample-system-language-change'
+
+include ':sample-webview-font'

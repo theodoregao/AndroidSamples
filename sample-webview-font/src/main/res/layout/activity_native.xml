@@ -15,14 +15,14 @@
 
         <TextView
             android:text="Normal"
-            android:textSize="24sp"
+            android:textSize="64sp"
             android:layout_marginRight="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <TextView
-            android:text="خطأ في عملية الدفع"
-            android:textSize="24sp"
+            android:text="@string/content"
+            android:textSize="64sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
     </LinearLayout>
@@ -35,15 +35,15 @@
 
         <TextView
             android:text="Tradbdo"
-            android:textSize="24sp"
+            android:textSize="64sp"
             android:layout_marginRight="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/text_tradbdo"
-            android:text="خطأ في عملية الدفع"
-            android:textSize="24sp"
+            android:text="@string/content"
+            android:textSize="64sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
     </LinearLayout>
@@ -56,15 +56,15 @@
 
         <TextView
             android:text="Andalewtj"
-            android:textSize="24sp"
+            android:textSize="64sp"
             android:layout_marginRight="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/text_andalewtj"
-            android:text="خطأ في عملية الدفع"
-            android:textSize="24sp"
+            android:text="@string/content"
+            android:textSize="64sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
@@ -78,15 +78,15 @@
 
         <TextView
             android:text="Chcry"
-            android:textSize="24sp"
+            android:textSize="64sp"
             android:layout_marginRight="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/text_chcry"
-            android:text="خطأ في عملية الدفع"
-            android:textSize="24sp"
+            android:text="@string/content"
+            android:textSize="64sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
@@ -100,59 +100,15 @@
 
         <TextView
             android:text="Epimodem"
-            android:textSize="24sp"
+            android:textSize="64sp"
             android:layout_marginRight="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/text_epimodem"
-            android:text="خطأ في عملية الدفع"
-            android:textSize="24sp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_marginBottom="16dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:text="Courier"
-            android:textSize="24sp"
-            android:layout_marginRight="16dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/text_courier"
-            android:text="خطأ في عملية الدفع"
-            android:textSize="24sp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_marginBottom="16dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:text="Sans-Serif-Condensed"
-            android:textSize="24sp"
-            android:layout_marginRight="16dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:fontFamily="sans-serif-condensed"
-            android:text="خطأ في عملية الدفع"
-            android:textSize="24sp"
+            android:text="@string/content"
+            android:textSize="64sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 

@@ -16,14 +16,14 @@ public class NativeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_native);
 
-        TextView andalewtj = findViewById(R.id.text_andalewtj);
-        andalewtj.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/andalewtj.ttf"));
-
         TextView tradbdo = findViewById(R.id.text_tradbdo);
         tradbdo.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/tradbdo.ttf"));
 
-        TextView chcry = findViewById(R.id.text_chcry);
-        chcry.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/BLKCHCRY.TTF"));
+        TextView andalewtj = findViewById(R.id.text_andalewtj);
+        andalewtj.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/andalewtj.ttf"));
+
+        TextView andalwtj = findViewById(R.id.text_andalwtj);
+        andalwtj.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/andalwtj.ttf"));
 
         TextView epimodem = findViewById(R.id.text_epimodem);
         epimodem.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/EPIMODEM.TTF"));

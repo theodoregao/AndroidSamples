@@ -1,117 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="test.panasonic.aero.samplewebviewfont.NativeActivity">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
 
     <LinearLayout
-        android:orientation="horizontal"
-        android:layout_marginBottom="16dp"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="test.panasonic.aero.samplewebviewfont.NativeActivity">
 
-        <TextView
-            android:text="Normal"
-            android:textSize="64sp"
-            android:layout_marginRight="16dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:text="@string/content"
-            android:textSize="64sp"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:orientation="horizontal"
+            android:padding="24dp">
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_marginBottom="16dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="16dp"
+                android:text="Normal"
+                android:textSize="64sp"/>
 
-        <TextView
-            android:text="Tradbdo"
-            android:textSize="64sp"
-            android:layout_marginRight="16dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/content"
+                android:textSize="64sp"/>
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/text_tradbdo"
-            android:text="@string/content"
-            android:textSize="64sp"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:orientation="horizontal"
+            android:padding="24dp">
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_marginBottom="16dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="16dp"
+                android:text="Andalewtj"
+                android:textSize="64sp"/>
 
-        <TextView
-            android:text="Andalewtj"
-            android:textSize="64sp"
-            android:layout_marginRight="16dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/text_andalewtj"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/content"
+                android:textSize="64sp"/>
 
-        <TextView
-            android:id="@+id/text_andalewtj"
-            android:text="@string/content"
-            android:textSize="64sp"
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:orientation="horizontal"
+            android:padding="24dp">
 
-    </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="16dp"
+                android:text="Andalwtj"
+                android:textSize="64sp"/>
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_marginBottom="16dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/text_andalwtj"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/content"
+                android:textSize="64sp"/>
 
-        <TextView
-            android:text="Chcry"
-            android:textSize="64sp"
-            android:layout_marginRight="16dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/text_chcry"
-            android:text="@string/content"
-            android:textSize="64sp"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:orientation="horizontal"
+            android:padding="24dp">
 
-    </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="16dp"
+                android:text="Tradbdo"
+                android:textSize="64sp"/>
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_marginBottom="16dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/text_tradbdo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/content"
+                android:textSize="64sp"/>
+        </LinearLayout>
 
-        <TextView
-            android:text="Epimodem"
-            android:textSize="64sp"
-            android:layout_marginRight="16dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/text_epimodem"
-            android:text="@string/content"
-            android:textSize="64sp"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:orientation="horizontal"
+            android:padding="24dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="16dp"
+                android:text="Epimodem"
+                android:textSize="64sp"/>
+
+            <TextView
+                android:id="@+id/text_epimodem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/content"
+                android:textSize="64sp"/>
+
+        </LinearLayout>
 
     </LinearLayout>
-
-</LinearLayout>
+</ScrollView>
